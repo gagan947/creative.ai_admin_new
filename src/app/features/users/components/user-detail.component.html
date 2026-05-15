@@ -1,0 +1,64 @@
+<section class="detail-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>User Detail - {{ userName }}</h2>
+    </div>
+    <a class="back-link" routerLink="/users">Back to users</a>
+  </div>
+
+  <section class="cards">
+    <article class="card"><p>Phone</p><h3>{{ phone }}</h3></article>
+    <article class="card"><p>Email</p><h3>{{ email }}</h3></article>
+    <article class="card"><p>Current Plan</p><h3>{{ currentPlan }}</h3></article>
+    <article class="card"><p>Remaining Credits</p><h3 class="metric">{{ remainingCredits }}</h3></article>
+    <article class="card"><p>Total Projects</p><h3 class="metric">{{ totalProjects }}</h3></article>
+    <article class="card"><p>Drafts</p><h3 class="metric">{{ totalDrafts }}</h3></article>
+    <article class="card"><p>Deploys</p><h3 class="metric">{{ totalDeploys }}</h3></article>
+  </section>
+
+  <section class="tabs panel">
+    <button type="button" [class.active]="activeTab === 'transactions'" (click)="setTab('transactions')">Transaction History</button>
+    <button type="button" [class.active]="activeTab === 'projects'" (click)="setTab('projects')">Project History</button>
+  </section>
+
+  <div class="grid" *ngIf="activeTab === 'transactions'">
+    <section class="panel">
+      <h3>Transaction History (Date/Time wise)</h3>
+      <table>
+        <thead>
+          <tr><th>Date Time</th><th>Type</th><th>Plan</th><th>Credits</th><th>Payment Mode</th><th>Detail</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of transactions">
+            <td>{{ tx.dateTime }}</td>
+            <td>{{ tx.type }}</td>
+            <td>{{ tx.plan }}</td>
+            <td>{{ tx.credits }}</td>
+            <td>{{ tx.paymentMode }}</td>
+            <td>{{ tx.detail }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="grid" *ngIf="activeTab === 'projects'">
+    <section class="panel">
+      <h3>Project / Draft / Deploy History</h3>
+      <table>
+        <thead>
+          <tr><th>Project ID</th><th>Project</th><th>Type</th><th>Date Time</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of projectHistory">
+            <td>{{ p.projectId }}</td>
+            <td>{{ p.projectName }}</td>
+            <td>{{ p.type }}</td>
+            <td>{{ p.dateTime }}</td>
+            <td>{{ p.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</section>
+

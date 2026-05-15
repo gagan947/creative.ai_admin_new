@@ -1,0 +1,37 @@
+<aside class="sidebar">
+  <div class="brand">
+    <img src="/assets/creativeai-mark.svg" alt="CreativeAI logo" class="brand-logo" />
+    <div>
+      <strong>CreativeAI</strong>
+      <p>Admin Panel</p>
+    </div>
+    <button
+      type="button"
+      class="menu-toggle"
+      [attr.aria-label]="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+      (click)="toggleMobileMenu()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path *ngIf="!isMobileMenuOpen" d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+        <path *ngIf="isMobileMenuOpen" d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+  <nav [class.open]="isMobileMenuOpen">
+    <a *ngFor="let link of links" [routerLink]="link.path" routerLinkActive="active" (click)="handleNavClick()">
+      <span class="nav-ico" [ngSwitch]="link.icon" aria-hidden="true">
+        <svg *ngSwitchCase="'dashboard'" viewBox="0 0 24 24" fill="none"><path d="M4 4h7v7H4V4Zm9 0h7v5h-7V4ZM4 13h7v7H4v-7Zm9 3h7v4h-7v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm0 2c-3 0-5 1.8-5 4v1h10v-1c0-2.2-2-4-5-4Zm8 .8c-1 0-1.9.2-2.6.6 1.1.8 1.8 1.9 1.8 3.2V19H21v-.6c0-2.1-2-3.6-5-3.6Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg *ngSwitchCase="'projects'" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M7 4v6m10-6v6M5 10h14v10H5V10Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg *ngSwitchCase="'builds'" viewBox="0 0 24 24" fill="none"><path d="m3 14 6-6 4 4 7-7M14 5h6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg *ngSwitchCase="'deploy'" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2h16v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg *ngSwitchCase="'callback'" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H8l-4 4V5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg *ngSwitchCase="'credits'" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Zm0 3h18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 13h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg *ngSwitchCase="'billing'" viewBox="0 0 24 24" fill="none"><path d="M6 4h12l2 16H4L6 4Zm-2 4h16" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 15h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg *ngSwitchCase="'errors'" viewBox="0 0 24 24" fill="none"><path d="M12 3 2 20h20L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v5m0 3h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg *ngSwitchDefault viewBox="0 0 24 24" fill="none"><path d="m12 8 4 4-4 4m-4-8 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h5m8 0h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </span>
+      <span>{{ link.label }}</span>
+    </a>
+  </nav>
+</aside>

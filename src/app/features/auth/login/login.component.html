@@ -1,0 +1,59 @@
+<section class="auth-page">
+  <div class="brand-hero">
+    <img src="/assets/creativeai-mark.svg" alt="CreativeAI logo" class="hero-logo" />
+    <h1>CreativeAI</h1>
+    <p>Unified Admin Platform for Credits, Builds, Revenue, and Operations</p>
+    <div class="hero-tags">
+      <span>Realtime Visibility</span>
+      <span>Usage Intelligence</span>
+      <span>Build Control</span>
+    </div>
+  </div>
+
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to access your command center</p>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" />
+    </label>
+    <p class="field-error" *ngIf="form.controls.email.touched && form.controls.email.hasError('required')">
+      Email is required.
+    </p>
+    <p class="field-error" *ngIf="form.controls.email.touched && form.controls.email.hasError('email')">
+      Enter a valid email address.
+    </p>
+
+    <label>
+      Password
+      <span class="password-field">
+        <input [type]="isPasswordVisible ? 'text' : 'password'" formControlName="password" />
+        <button class="password-toggle" type="button"
+          [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'"
+          (click)="togglePasswordVisibility()">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.9" />
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.9" />
+            <path *ngIf="isPasswordVisible" d="M4 4 20 20" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" />
+          </svg>
+        </button>
+      </span>
+    </label>
+    <p class="field-error" *ngIf="form.controls.password.touched && form.controls.password.hasError('required')">
+      Password is required.
+    </p>
+
+    <label class="remember-row">
+      <input type="checkbox" formControlName="rememberMe" />
+      <span>Remember me</span>
+    </label>
+
+    <!-- <a class="forgot-link" routerLink="/auth/forgot-password">Forgot Password?</a> -->
+
+    <button class="login-btn" type="submit" [disabled]="loading">
+      {{ loading ? 'Please wait...' : 'Enter Admin Console' }}
+    </button>
+  </form>
+</section>

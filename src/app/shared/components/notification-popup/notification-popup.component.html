@@ -1,0 +1,24 @@
+<div class="notification-stack" aria-live="polite" aria-atomic="true">
+  <article
+    *ngFor="let notification of notificationService.notifications(); trackBy: trackById"
+    class="toast"
+    [class.toast-success]="notification.type === 'success'"
+    [class.toast-error]="notification.type === 'error'"
+    [class.toast-info]="notification.type === 'info'"
+    [class.toast-warning]="notification.type === 'warning'"
+    role="alert"
+  >
+    <div class="toast-icon" aria-hidden="true">
+      <span *ngIf="notification.type === 'success'">✓</span>
+      <span *ngIf="notification.type === 'error'">!</span>
+      <span *ngIf="notification.type === 'info'">i</span>
+      <span *ngIf="notification.type === 'warning'">!</span>
+    </div>
+
+    <p class="toast-message">{{ notification.message }}</p>
+
+    <button type="button" class="toast-close" aria-label="Dismiss notification" (click)="dismiss(notification.id)">
+      ×
+    </button>
+  </article>
+</div>

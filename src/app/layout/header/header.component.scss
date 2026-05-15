@@ -1,0 +1,146 @@
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: 0 10px 28px -24px rgba(15, 23, 42, 0.55);
+}
+
+.headline {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.header-logo {
+  width: 34px;
+  height: 34px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+p {
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0f172a;
+  background: linear-gradient(135deg, rgba(29, 155, 240, 0.17), rgba(0, 200, 117, 0.16));
+  border: 1px solid #dbeafe;
+  padding: 0.42rem 0.65rem;
+  border-radius: 999px;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-btn {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  width: 190px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 0.4rem;
+  display: grid;
+  z-index: 20;
+}
+
+.menu-panel a,
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  text-decoration: none;
+  color: #0f172a;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-ico {
+  width: 16px;
+  height: 16px;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-ico svg {
+  width: 16px;
+  height: 16px;
+}
+
+.menu-panel a:hover,
+.logout-btn:hover {
+  background: #eef2ff;
+}
+
+@media (max-width: 780px) {
+  .header {
+    padding: 0.8rem 0.9rem;
+    align-items: flex-start;
+  }
+
+  .headline {
+    min-width: 0;
+  }
+
+  h1 {
+    font-size: 0.96rem;
+  }
+
+  p {
+    display: none;
+  }
+
+  .profile-btn {
+    padding: 0.4rem 0.62rem;
+    font-size: 0.84rem;
+  }
+
+  .menu-panel {
+    width: 180px;
+  }
+
+  .badge { display: none; }
+}

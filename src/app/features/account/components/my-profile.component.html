@@ -1,0 +1,18 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>My Profile</h2>
+    </div>
+  </div>
+
+  <section class="panel">
+    <form [formGroup]="form" (ngSubmit)="save()" class="grid">
+      <label>Full Name <input formControlName="name" /></label>
+      <label>Email <input formControlName="email" /></label>
+      <label>Phone Number <input formControlName="phone" /></label>
+      <label>Role <input formControlName="role" /></label>
+      <button type="submit">Save Profile</button>
+      <p class="success" *ngIf="saved">Profile updated (static demo).</p>
+    </form>
+  </section>
+</section>
+

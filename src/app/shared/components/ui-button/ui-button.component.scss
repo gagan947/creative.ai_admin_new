@@ -1,0 +1,33 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondary {
+  background: #f8fafc;
+  border-color: var(--border);
+  color: #0f172a;
+}

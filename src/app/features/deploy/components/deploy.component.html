@@ -1,0 +1,23 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>Deploy Requests</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search by user / project id" />
+      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+  <section class="page-filters">
+    <label><span>Requested From</span><input type="date" /></label>
+    <label><span>Requested To</span><input type="date" /></label>
+    <label><span>Deploy Status</span><select>
+        <option>All</option>
+        <option>Pending</option>
+        <option>Success</option>
+        <option>Failed</option>
+      </select></label>
+    <label><span>User</span><input placeholder="User / Email" /></label>
+  </section>
+  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+</section>

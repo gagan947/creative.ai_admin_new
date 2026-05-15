@@ -1,0 +1,31 @@
+.table-wrap {
+  overflow: auto;
+  background: linear-gradient(145deg, #ffffff, #f8fbff);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eef2f7;
+}
+
+th {
+  font-weight: 700;
+  color: #334155;
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+}
+
+tbody tr:hover {
+  background: #f8fbff;
+}

@@ -1,0 +1,186 @@
+<section class="filters panel">
+  <div class="filters-head">
+    <div>
+      <h3>Dashboard Overview</h3>
+    </div>
+    <div class="quick-actions">
+      <button type="button" [class.active]="filterMode === 'range' && filters.range === '1d'"
+        (click)="setPreset('1d')">Today</button>
+      <button type="button" [class.active]="filterMode === 'range' && filters.range === '7d'"
+        (click)="setPreset('7d')">7D</button>
+      <button type="button" [class.active]="filterMode === 'range' && filters.range === '30d'"
+        (click)="setPreset('30d')">30D</button>
+    </div>
+  </div>
+
+  <div class="filter-grid">
+    <label>
+      <span class="filter-label">From</span>
+      <input type="date" [(ngModel)]="filters.from" />
+    </label>
+    <label>
+      <span class="filter-label">To</span>
+      <input type="date" [(ngModel)]="filters.to" />
+    </label>
+    <!-- <label>
+      <span class="filter-label">User ID</span>
+      <input type="text" [(ngModel)]="filters.userId" placeholder="Optional user id" />
+    </label>
+    <label>
+      <span class="filter-label">Plan Key</span>
+      <input type="text" [(ngModel)]="filters.planKey" placeholder="Optional plan key" />
+    </label>
+    <label>
+      <span class="filter-label">Build Status</span>
+      <input type="text" [(ngModel)]="filters.buildStatus" placeholder="Optional status" />
+    </label> -->
+    <div class="filter-actions">
+      <button type="button" class="primary" [disabled]="loading" (click)="applyCustomDate()">
+        {{ loading && filterMode === 'custom' ? 'Loading...' : 'Apply Custom Dates' }}
+      </button>
+      <button type="button" class="ghost" [disabled]="loading" (click)="reloadDashboardData()">
+        Refresh
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="cards" *ngIf="cards.length">
+  <article class="card" *ngFor="let card of cards">
+    <p>{{ card.label }}</p>
+    <h3>{{ card.value }}</h3>
+  </article>
+</section>
+
+<section class="panel state-panel" *ngIf="loading">
+  <h4>Loading dashboard data...</h4>
+  <p>Please wait while we fetch the latest overview.</p>
+</section>
+
+<section class="panel state-panel" *ngIf="!loading && !hasResults">
+  <h4>No dashboard results found</h4>
+  <p>Try a different range, custom dates, or narrower filters.</p>
+</section>
+
+<section class="charts-grid" *ngIf="hasResults">
+  <article class="panel chart-panel">
+    <h4>User Growth</h4>
+    <div class="chart-wrap">
+      <canvas baseChart [data]="userGrowthChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+    </div>
+  </article>
+
+  <article class="panel chart-panel">
+    <h4>Revenue (&#8377;)</h4>
+    <div class="chart-wrap">
+      <canvas baseChart [data]="revenueChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
+    </div>
+  </article>
+
+  <article class="panel chart-panel">
+    <h4>Plan Mix</h4>
+    <div class="chart-wrap">
+      <canvas baseChart [data]="planMixChartData" [options]="pieChartOptions" [type]="pieChartType"></canvas>
+    </div>
+  </article>
+
+  <article class="panel chart-panel">
+    <h4>Build Success vs Failed</h4>
+    <div class="chart-wrap">
+      <canvas baseChart [data]="buildStatusChartData" [options]="stackedBarChartOptions" [type]="barChartType"></canvas>
+    </div>
+  </article>
+
+  <article class="panel chart-panel">
+    <h4>Success Rate</h4>
+    <div class="chart-wrap compact-chart">
+      <canvas baseChart [data]="successRateChartData" [options]="doughnutChartOptions"
+        [type]="doughnutChartType"></canvas>
+      <div class="chart-center">
+        <strong>{{ successRate }}%</strong>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="deep-dive-stack" *ngIf="hasDeepDiveResults">
+  <section class="deep-dive-panel">
+    <!-- <article class="sub-panel">
+      <h4>Plan Distribution</h4>
+      <div class="distribution-grid">
+        <div class="distribution-card" *ngFor="let item of deepDiveData?.planDistribution">
+          <p>{{ item.label }}</p>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </div>
+    </article> -->
+
+    <div class="deep-dive-grid">
+      <article class="sub-panel">
+        <h4>Top Credit Consumers</h4>
+        <div class="table-wrap">
+          <table class="deep-dive-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Plan</th>
+                <th>Credits Used</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of deepDiveData?.topCreditConsumers">
+                <td>{{ item.userName }} <span class="muted-inline">#{{ item.userId }}</span></td>
+                <td>{{ item.planName }}</td>
+                <td>{{ formatNumber(item.creditsUsed) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="sub-panel">
+        <h4>Live Activity Feed</h4>
+        <div class="activity-feed">
+          <div class="activity-item" *ngFor="let item of deepDiveData?.liveActivityFeed">
+            <div class="activity-copy">
+              <strong>{{ formatActivityTitle(item.type) }}</strong>
+              <span>{{ item.userName }}</span>
+              <p>{{ item.detail }}</p>
+            </div>
+            <time>{{ formatDateTime(item.occurredAt) }}</time>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <article class="sub-panel">
+      <h4>User Wise Detailed Breakdown</h4>
+      <div class="table-wrap">
+        <table class="deep-dive-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Plan</th>
+              <th>Projects</th>
+              <th>Builds</th>
+              <th>Failures</th>
+              <th>Credits Used</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of deepDiveData?.userWiseDetailedBreakdown">
+              <td>{{ item.userName }} <span class="muted-inline">#{{ item.userId }}</span></td>
+              <td>{{ item.planName }}</td>
+              <td>{{ formatNumber(item.projects) }}</td>
+              <td>{{ formatNumber(item.builds) }}</td>
+              <td>{{ formatNumber(item.failures) }}</td>
+              <td>{{ formatNumber(item.creditsUsed) }}</td>
+              <td>Rs {{ formatNumber(item.revenue) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</section>

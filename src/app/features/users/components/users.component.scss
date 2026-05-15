@@ -1,0 +1,37 @@
+.users-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.8rem 0.75rem;
+  border-bottom: 1px solid #eef2f7;
+  white-space: nowrap;
+}
+
+th {
+  color: #0f172a;
+  font-weight: 800;
+  background: #f8fafc;
+}
+
+.view-link {
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 700;
+}

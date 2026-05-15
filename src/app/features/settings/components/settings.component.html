@@ -1,0 +1,159 @@
+<section class="feature-page settings-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>Credits & Plans Settings</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search config" />
+      <app-ui-button label="Export Config" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+
+  <section class="cards top-summary">
+    <article class="card"><p><span class="metric-ico">FREE</span> Signup Credits</p><h3>50</h3></article>
+    <article class="card"><p><span class="metric-ico">1ST</span> First Project Cost</p><h3>25</h3></article>
+    <article class="card"><p><span class="metric-ico">AI</span> Min AI Charge</p><h3>2</h3></article>
+    <article class="card"><p><span class="metric-ico">TOP</span> Top-Up Access</p><h3>All Users</h3></article>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <h3>Subscription Plans CRUD</h3>
+      <div class="tab-switch">
+        <button type="button" [class.active]="selectedPlanTab === 'monthly'" (click)="selectPlanTab('monthly')">Monthly Plans</button>
+        <button type="button" [class.active]="selectedPlanTab === 'yearly'" (click)="selectPlanTab('yearly')">Yearly Plans</button>
+      </div>
+    </div>
+
+    <form class="crud-form" (ngSubmit)="savePlan()">
+      <label><span>Plan Name</span><input name="planName" [(ngModel)]="planForm.name" /></label>
+      <label><span>Price (&#8377;)</span><input name="planPrice" type="number" [(ngModel)]="planForm.price" /></label>
+      <label><span>Credits / Month</span><input name="planCredits" type="number" [(ngModel)]="planForm.creditsPerMonth" /></label>
+      <label><span>Active</span><select name="planActive" [(ngModel)]="planForm.active"><option [ngValue]="true">Yes</option><option [ngValue]="false">No</option></select></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">{{ editingPlanId ? 'Update Plan' : 'Add Plan' }}</button>
+        <button type="button" class="btn-ghost" (click)="cancelPlanEdit()">Reset</button>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Plan</th><th>Billing</th><th>Price (&#8377;)</th><th>Credits/Month</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of activePlans">
+            <td>{{ item.name }}</td>
+            <td>{{ item.billing }}</td>
+            <td>&#8377;{{ item.price }}</td>
+            <td>{{ item.creditsPerMonth }}</td>
+            <td>{{ item.active ? 'Active' : 'Disabled' }}</td>
+            <td class="action-cell">
+              <button type="button" class="link-btn" (click)="editPlan(item)">Edit</button>
+              <button type="button" class="link-btn danger" (click)="deletePlan(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>Top-Up Packs CRUD</h3>
+    <form class="crud-form" (ngSubmit)="savePack()">
+      <label><span>Pack Name</span><input name="packName" [(ngModel)]="packForm.name" /></label>
+      <label><span>Price (&#8377;)</span><input name="packPrice" type="number" [(ngModel)]="packForm.price" /></label>
+      <label><span>Credits</span><input name="packCredits" type="number" [(ngModel)]="packForm.credits" /></label>
+      <label><span>Available For</span><input name="packFor" [(ngModel)]="packForm.availableFor" /></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">{{ editingPackId ? 'Update Pack' : 'Add Pack' }}</button>
+        <button type="button" class="btn-ghost" (click)="cancelPackEdit()">Reset</button>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Pack</th><th>Price (&#8377;)</th><th>Credits</th><th>Available For</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of creditPacks">
+            <td>{{ item.name }}</td>
+            <td>&#8377;{{ item.price }}</td>
+            <td>{{ item.credits }}</td>
+            <td>{{ item.availableFor }}</td>
+            <td class="action-cell">
+              <button type="button" class="link-btn" (click)="editPack(item)">Edit</button>
+              <button type="button" class="link-btn danger" (click)="deletePack(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>Credit Usage Actions CRUD</h3>
+    <form class="crud-form" (ngSubmit)="saveAction()">
+      <label><span>Action</span><input name="actionName" [(ngModel)]="actionForm.action" /></label>
+      <label><span>Credits</span><input name="actionCredits" type="number" [(ngModel)]="actionForm.credits" /></label>
+      <label class="wide"><span>Notes</span><input name="actionNotes" [(ngModel)]="actionForm.notes" /></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">{{ editingActionId ? 'Update Action' : 'Add Action' }}</button>
+        <button type="button" class="btn-ghost" (click)="cancelActionEdit()">Reset</button>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Action</th><th>Credits</th><th>Notes</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of creditActions">
+            <td>{{ item.action }}</td>
+            <td>{{ item.credits }}</td>
+            <td>{{ item.notes }}</td>
+            <td class="action-cell">
+              <button type="button" class="link-btn" (click)="editAction(item)">Edit</button>
+              <button type="button" class="link-btn danger" (click)="deleteAction(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>System Rules CRUD</h3>
+    <form class="crud-form" (ngSubmit)="saveRule()">
+      <label><span>Rule Key</span><input name="ruleKey" [(ngModel)]="ruleForm.key" /></label>
+      <label><span>Rule Value</span><input name="ruleValue" [(ngModel)]="ruleForm.value" /></label>
+      <label><span>Scope</span><input name="ruleScope" [(ngModel)]="ruleForm.scope" /></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">{{ editingRuleId ? 'Update Rule' : 'Add Rule' }}</button>
+        <button type="button" class="btn-ghost" (click)="cancelRuleEdit()">Reset</button>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Value</th><th>Scope</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of rules">
+            <td>{{ item.key }}</td>
+            <td>{{ item.value }}</td>
+            <td>{{ item.scope }}</td>
+            <td class="action-cell">
+              <button type="button" class="link-btn" (click)="editRule(item)">Edit</button>
+              <button type="button" class="link-btn danger" (click)="deleteRule(item.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+

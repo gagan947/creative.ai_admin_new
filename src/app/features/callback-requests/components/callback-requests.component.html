@@ -1,0 +1,20 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>Call Back Requests</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search callback requests" />
+      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+  <section class="page-filters">
+    <label><span>Request From</span><input type="date" /></label>
+    <label><span>Request To</span><input type="date" /></label>
+    <label><span>Priority</span><select><option>All</option><option>High</option><option>Medium</option><option>Low</option></select></label>
+    <label><span>Status</span><select><option>All</option><option>Open</option><option>Contacted</option><option>Closed</option></select></label>
+  </section>
+  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+</section>
+
+
+

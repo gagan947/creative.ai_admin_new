@@ -1,0 +1,4 @@
+﻿.feature-page { display: grid; gap: 1rem; }
+.toolbar { display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.actions { display: flex; gap: .7rem; }
+input { border: 1px solid var(--border); background: var(--surface); border-radius: 10px; padding: .55rem .8rem; }

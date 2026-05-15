@@ -1,0 +1,20 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>Usage & Credits</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search Usage & Credits" />
+      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+  <section class="page-filters">
+    <label><span>Usage From</span><input type="date" /></label>
+    <label><span>Usage To</span><input type="date" /></label>
+    <label><span>Plan</span><select><option>All</option><option>Free Plan</option><option>Standard Plan</option><option>Enterprise Plan</option></select></label>
+    <label><span>Credit Range</span><select><option>All</option><option>0-1000</option><option>1001-10000</option><option>10000+</option></select></label>
+  </section>
+  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+</section>
+
+
+

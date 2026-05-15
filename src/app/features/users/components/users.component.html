@@ -1,0 +1,50 @@
+<section class="users-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>Users</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search users" />
+      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+
+  <section class="page-filters">
+    <label><span>Signup From</span><input type="date" /></label>
+    <label><span>Signup To</span><input type="date" /></label>
+    <label><span>Plan</span><select><option>All</option><option>Free Plan</option><option>Standard Plan</option><option>Enterprise Plan</option></select></label>
+    <label><span>Status</span><select><option>All</option><option>Active</option><option>Inactive</option></select></label>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Signup Date</th>
+          <th>Plan</th>
+          <th>Credits Used</th>
+          <th>Remaining</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.name }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.signupDate }}</td>
+          <td>{{ user.plan }}</td>
+          <td>{{ user.creditsUsed }}</td>
+          <td>{{ user.creditsRemaining }}</td>
+          <td>{{ user.status }}</td>
+          <td><a class="view-link" [routerLink]="['/users', user.id]">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+

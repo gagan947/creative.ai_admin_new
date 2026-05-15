@@ -1,0 +1,20 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">      <h2>Errors & Failures</h2>
+    </div>
+    <div class="actions">
+      <input placeholder="Search Errors & Failures" />
+      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+    </div>
+  </div>
+  <section class="page-filters">
+    <label><span>Error From</span><input type="date" /></label>
+    <label><span>Error To</span><input type="date" /></label>
+    <label><span>Error Type</span><select><option>All</option><option>Build</option><option>Deploy</option><option>Payment</option><option>API</option></select></label>
+    <label><span>Severity</span><select><option>All</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></label>
+  </section>
+  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+</section>
+
+
+
