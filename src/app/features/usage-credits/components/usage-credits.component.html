@@ -1,20 +1,46 @@
 <section class="feature-page">
   <div class="toolbar">
-    <div class="title-brand">      <h2>Usage & Credits</h2>
+    <div class="title-brand">
+      <h2>Usage & Credits</h2>
     </div>
     <div class="actions">
-      <input placeholder="Search Usage & Credits" />
-      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search usage credits" />
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+        (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
+
   <section class="page-filters">
-    <label><span>Usage From</span><input type="date" /></label>
-    <label><span>Usage To</span><input type="date" /></label>
-    <label><span>Plan</span><select><option>All</option><option>Free Plan</option><option>Standard Plan</option><option>Enterprise Plan</option></select></label>
-    <label><span>Credit Range</span><select><option>All</option><option>0-1000</option><option>1001-10000</option><option>10000+</option></select></label>
+    <label><span>Usage From</span><input type="date" [(ngModel)]="filters.usageFrom"
+        (change)="onFilterChange()" /></label>
+    <label><span>Usage To</span><input type="date" [(ngModel)]="filters.usageTo" (change)="onFilterChange()" /></label>
+    <label><span>Plan</span><select [(ngModel)]="filters.plan" (change)="onFilterChange()">
+        <option value="all">All</option>
+      </select></label>
+    <label><span>Credit Range</span><select [(ngModel)]="filters.creditRange" (change)="onFilterChange()">
+        <option value="all">All</option>
+        <option value="0-1000">0-1000</option>
+        <option value="1000-5000">1000-5000</option>
+        <option value="5000+">5000+</option>
+        <!-- <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option> -->
+      </select></label>
   </section>
-  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+
+  <section class="table-section">
+    <app-ui-table [columns]="columns" [rows]="rows"
+      [emptyMessage]="!loading ? 'No usage credits found for the selected filters.' : 'Loading usage credits...'"
+      [minWidth]="'980px'" [maxHeight]="'100%'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} usage credit records</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
 </section>
-
-
-
