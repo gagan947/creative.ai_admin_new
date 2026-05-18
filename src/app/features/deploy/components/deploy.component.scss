@@ -1,6 +1,9 @@
 .feature-page {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  min-height: 0;
 }
 
 .toolbar {
@@ -44,8 +47,11 @@ select {
 }
 
 .table-section {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.85rem;
+  flex: 1;
+  min-height: 0;
 }
 
 .table-state {

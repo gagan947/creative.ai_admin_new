@@ -41,7 +41,7 @@
 
     <app-ui-table [columns]="columns" [rows]="rows"
       [emptyMessage]="!loading ? 'No deploy requests found for the selected filters.' : 'Loading deploy requests...'"
-      [cellTemplate]="deployCellTemplate" [minWidth]="'920px'" [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
+      [cellTemplate]="deployCellTemplate" [minWidth]="'920px'" [maxHeight]="'100%'"></app-ui-table>
 
     <div class="table-footer">
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} deploy requests</p>

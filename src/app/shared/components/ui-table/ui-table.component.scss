@@ -1,4 +1,11 @@
+:host {
+  display: block;
+  min-height: 0;
+}
+
 .table-wrap {
+  height: 100%;
+  max-height: 100%;
   overflow: auto;
   background: linear-gradient(145deg, #ffffff, #f8fbff);
   border-radius: 14px;
