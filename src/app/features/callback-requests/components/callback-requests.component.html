@@ -1,20 +1,71 @@
 <section class="feature-page">
   <div class="toolbar">
-    <div class="title-brand">      <h2>Call Back Requests</h2>
+    <div class="title-brand">
+      <h2>Call Back Requests</h2>
     </div>
     <div class="actions">
-      <input placeholder="Search callback requests" />
-      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)"
+        placeholder="Search by name / email / phone / message" />
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+        (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
+
   <section class="page-filters">
-    <label><span>Request From</span><input type="date" /></label>
-    <label><span>Request To</span><input type="date" /></label>
-    <label><span>Priority</span><select><option>All</option><option>High</option><option>Medium</option><option>Low</option></select></label>
-    <label><span>Status</span><select><option>All</option><option>Open</option><option>Contacted</option><option>Closed</option></select></label>
+    <label><span>Request From</span><input type="date" [(ngModel)]="filters.requestFrom"
+        (change)="onFilterChange()" /></label>
+    <label><span>Request To</span><input type="date" [(ngModel)]="filters.requestTo"
+        (change)="onFilterChange()" /></label>
+    <!-- <label><span>Priority</span><select [(ngModel)]="filters.priority" (change)="onFilterChange()">
+        <option value="all">All</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select></label> -->
+    <label><span>Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
+        <option value="all">All</option>
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+      </select></label>
   </section>
-  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+
+  <section class="table-section">
+    <ng-template #callbackCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+        <select *ngSwitchCase="'Status'" class="status-select" [ngModel]="getRowStatusValue(row)"
+          (ngModelChange)="onRowStatusChange(row, $event)">
+          <option *ngFor="let option of statusOptions" [value]="option">
+            {{ option | titlecase }}
+          </option>
+        </select>
+        <span *ngSwitchCase="'Message'" class="message-text" [title]="getRowMessage(row)">
+          {{ getRowMessage(row) }}
+        </span>
+        <button *ngSwitchCase="'Action'" type="button" class="view-link" (click)="openMessageModal(row)">
+          View
+        </button>
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
+
+    <app-ui-table [columns]="columns" [rows]="rows"
+      [emptyMessage]="!loading ? 'No callback requests found for the selected filters.' : 'Loading callback requests...'"
+      [cellTemplate]="callbackCellTemplate" [minWidth]="'1180px'" [maxHeight]="'100%'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} callback requests</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <app-ui-modal [open]="!!selectedMessage" title="Callback Message" (closed)="closeMessageModal()">
+    <div class="message-modal">
+      {{ selectedMessage || 'N/A' }}
+    </div>
+  </app-ui-modal>
 </section>
-
-
-
