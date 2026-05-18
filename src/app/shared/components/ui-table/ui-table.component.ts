@@ -10,5 +10,7 @@ import { Component, Input } from '@angular/core';
 })
 export class UiTableComponent {
   @Input() columns: string[] = [];
-  @Input() rows: Record<string, string>[] = [];
+  @Input() rows: Record<string, string | number>[] = [];
+  @Input() minWidth = '960px';
+  @Input() maxHeight = 'none';
 }

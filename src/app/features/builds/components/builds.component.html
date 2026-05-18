@@ -1,20 +1,59 @@
 <section class="feature-page">
   <div class="toolbar">
-    <div class="title-brand">      <h2>Builds</h2>
+    <div class="title-brand">
+      <h2>Builds</h2>
     </div>
     <div class="actions">
-      <input placeholder="Search Builds" />
-      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+      <input
+        [ngModel]="filters.search"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search Builds" />
+      <app-ui-button
+        label="Export CSV"
+        variant="secondary"
+        [disabled]="!hasRows"
+        (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
+
   <section class="page-filters">
-    <label><span>From</span><input type="date" /></label>
-    <label><span>To</span><input type="date" /></label>
-    <label><span>Status</span><select><option>All</option><option>Success</option><option>Failed</option></select></label>
-    <label><span>Project</span><input placeholder="Project name / ID" /></label>
+    <label><span>From</span><input type="date" [(ngModel)]="filters.from" (change)="onFilterChange()" /></label>
+    <label><span>To</span><input type="date" [(ngModel)]="filters.to" (change)="onFilterChange()" /></label>
+    <label>
+      <span>Status</span>
+      <select [(ngModel)]="filters.status" (change)="onFilterChange()">
+        <option value="all">All</option>
+        <option value="success">Success</option>
+        <option value="failed">Failed</option>
+      </select>
+    </label>
+    <label>
+      <span>Project</span>
+      <input
+        [ngModel]="filters.project"
+        (ngModelChange)="onProjectChange($event)"
+        placeholder="Project name / ID" />
+    </label>
   </section>
-  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+
+  <section class="table-section">
+    <div class="table-state" *ngIf="loading">Loading builds...</div>
+    <div class="table-state" *ngIf="!loading && !hasRows">No builds found for the selected filters.</div>
+
+    <app-ui-table
+      [columns]="columns"
+      [rows]="rows"
+      [minWidth]="'920px'"
+      [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} builds</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
 </section>
-
-
-
