@@ -9,6 +9,7 @@ export interface DeployRecord {
   user: string;
   project_id: string;
   project_name: string;
+  public_template_id?: string;
   domain: string;
   environment: string;
   requested_at: string;
@@ -36,11 +37,13 @@ export interface DeployPaginationMeta {
 
 export interface DeployApiResponse {
   success?: boolean;
+  status?: number;
   message?: string;
   data?: unknown;
   pagination?: DeployPaginationMeta;
   meta?: DeployPaginationMeta;
   total?: number;
+  totalRecords?: number;
   page?: number;
   limit?: number;
   totalPages?: number;

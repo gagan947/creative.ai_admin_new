@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-ui-table',
@@ -10,7 +10,9 @@ import { Component, Input } from '@angular/core';
 })
 export class UiTableComponent {
   @Input() columns: string[] = [];
-  @Input() rows: Record<string, string | number>[] = [];
+  @Input() rows: Record<string, unknown>[] = [];
   @Input() minWidth = '960px';
   @Input() maxHeight = 'none';
+  @Input() emptyMessage = '';
+  @Input() cellTemplate?: TemplateRef<{ $implicit: Record<string, unknown>; column: string }>;
 }

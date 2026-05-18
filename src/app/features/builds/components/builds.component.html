@@ -4,14 +4,8 @@
       <h2>Builds</h2>
     </div>
     <div class="actions">
-      <input
-        [ngModel]="filters.search"
-        (ngModelChange)="onSearchChange($event)"
-        placeholder="Search Builds" />
-      <app-ui-button
-        label="Export CSV"
-        variant="secondary"
-        [disabled]="!hasRows"
+      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search Builds" />
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
         (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
@@ -29,22 +23,15 @@
     </label>
     <label>
       <span>Project</span>
-      <input
-        [ngModel]="filters.project"
-        (ngModelChange)="onProjectChange($event)"
-        placeholder="Project name / ID" />
+      <input [ngModel]="filters.project" (ngModelChange)="onProjectChange($event)" placeholder="Project name / ID" />
     </label>
   </section>
 
   <section class="table-section">
     <div class="table-state" *ngIf="loading">Loading builds...</div>
-    <div class="table-state" *ngIf="!loading && !hasRows">No builds found for the selected filters.</div>
 
-    <app-ui-table
-      [columns]="columns"
-      [rows]="rows"
-      [minWidth]="'920px'"
-      [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
+    <app-ui-table [columns]="columns" [rows]="rows" [emptyMessage]="!loading ? 'No builds found' : ''"
+      [minWidth]="'920px'" [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
 
     <div class="table-footer">
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} builds</p>

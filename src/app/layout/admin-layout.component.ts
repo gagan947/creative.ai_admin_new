@@ -7,8 +7,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [SidebarComponent, HeaderComponent, FooterComponent, RouterOutlet],
+  imports: [SidebarComponent, HeaderComponent, RouterOutlet],
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.scss'],
 })
-export class AdminLayoutComponent {}
+export class AdminLayoutComponent { }

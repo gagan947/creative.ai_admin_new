@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../core/services/notification.service';
-import { UiButtonComponent, UiTableComponent } from '../../../shared/components';
+import { UiButtonComponent, UiModalComponent, UiTableComponent } from '../../../shared/components';
 import {
   DeployApiResponse,
   DeployPaginationMeta,
@@ -13,7 +13,7 @@ import {
   DeployStatusFilter,
 } from '../services/deploy.service';
 
-type DeployRow = Record<string, string | number>;
+type DeployRow = Record<string, unknown>;
 
 interface DeployFilters {
   search: string;
@@ -26,13 +26,14 @@ interface DeployFilters {
 @Component({
   selector: 'app-deploy',
   standalone: true,
-  imports: [CommonModule, FormsModule, UiButtonComponent, UiTableComponent],
+  imports: [CommonModule, FormsModule, UiButtonComponent, UiModalComponent, UiTableComponent],
   providers: [DatePipe],
   templateUrl: './deploy.component.html',
   styleUrls: ['./deploy.component.scss'],
 })
 export class DeployComponent implements OnInit {
-  readonly columns = ['User', 'Project ID', 'Project Name', 'Domain', 'Environment', 'Requested At', 'Status'];
+  readonly columns = ['S.No.', 'User', 'Project Name', 'Domain', 'Environment', 'Requested At', 'Status', 'Action'];
+  readonly exportColumns = ['S.No.', 'User', 'Project ID', 'Project Name', 'Domain', 'Environment', 'Requested At', 'Status'];
   readonly pageSize = 10;
   readonly textFilterChanges$ = new Subject<void>();
 
@@ -41,6 +42,7 @@ export class DeployComponent implements OnInit {
   currentPage = 1;
   totalItems = 0;
   totalPages = 1;
+  selectedDeployRequest: DeployRecord | null = null;
 
   filters: DeployFilters = {
     search: '',
@@ -55,7 +57,7 @@ export class DeployComponent implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
@@ -115,15 +117,23 @@ export class DeployComponent implements OnInit {
     this.loadDeployRequests(this.currentPage + 1);
   }
 
+  openDeployRequestDetails(row: DeployRow): void {
+    this.selectedDeployRequest = (row['__raw'] as DeployRecord | undefined) || null;
+  }
+
+  closeDeployRequestDetails(): void {
+    this.selectedDeployRequest = null;
+  }
+
   exportCsv(): void {
     if (!this.rows.length) {
       this.notificationService.warning('No deploy requests available to export.');
       return;
     }
 
-    const headers = this.columns.join(',');
+    const headers = this.exportColumns.join(',');
     const dataRows = this.rows.map((row) =>
-      this.columns
+      this.exportColumns
         .map((column) => `"${String(row[column] ?? '').replace(/"/g, '""')}"`)
         .join(','),
     );
@@ -178,7 +188,7 @@ export class DeployComponent implements OnInit {
           const deployRequests = this.extractDeployRequests(response);
           const pagination = this.extractPagination(response, deployRequests.length, page);
 
-          this.rows = deployRequests.map((request) => this.mapDeployRow(request));
+          this.rows = deployRequests.map((request, index) => this.mapDeployRow(request, index, pagination.page));
           this.currentPage = pagination.page;
           this.totalItems = pagination.total;
           this.totalPages = pagination.totalPages;
@@ -229,6 +239,7 @@ export class DeployComponent implements OnInit {
 
     const total =
       this.toPositiveNumber(pagination.total) ??
+      this.toPositiveNumber(response.totalRecords) ??
       this.toPositiveNumber(response.total) ??
       (requestedPage > 1 ? (requestedPage - 1) * this.pageSize + itemCount : itemCount);
 
@@ -266,8 +277,9 @@ export class DeployComponent implements OnInit {
     return null;
   }
 
-  private mapDeployRow(request: DeployRecord): DeployRow {
+  private mapDeployRow(request: DeployRecord, index: number, page: number): DeployRow {
     return {
+      'S.No.': (page - 1) * this.pageSize + index + 1,
       User: request.user || 'N/A',
       'Project ID': request.project_id || 'N/A',
       'Project Name': request.project_name || 'N/A',
@@ -275,6 +287,8 @@ export class DeployComponent implements OnInit {
       Environment: request.environment || 'N/A',
       'Requested At': this.formatDateTime(request.requested_at),
       Status: this.formatStatus(request.status),
+      Action: 'View',
+      __raw: request,
     };
   }
 

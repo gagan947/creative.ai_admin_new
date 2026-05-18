@@ -30,3 +30,13 @@ th {
 tbody tr:hover {
   background: #f8fbff;
 }
+
+.empty-row:hover {
+  background: transparent;
+}
+
+.empty-row td {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1.25rem 1rem;
+}

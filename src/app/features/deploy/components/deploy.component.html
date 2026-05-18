@@ -4,38 +4,44 @@
       <h2>Deploy Requests</h2>
     </div>
     <div class="actions">
-      <input
-        [ngModel]="filters.search"
-        (ngModelChange)="onSearchChange($event)"
+      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)"
         placeholder="Search by user / email / project / domain / PRJ-id" />
-      <app-ui-button
-        label="Export CSV"
-        variant="secondary"
-        [disabled]="!hasRows"
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
         (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
   <section class="page-filters">
-    <label><span>Requested From</span><input type="date" [(ngModel)]="filters.requestedFrom" (change)="onFilterChange()" /></label>
-    <label><span>Requested To</span><input type="date" [(ngModel)]="filters.requestedTo" (change)="onFilterChange()" /></label>
+    <label><span>Requested From</span><input type="date" [(ngModel)]="filters.requestedFrom"
+        (change)="onFilterChange()" /></label>
+    <label><span>Requested To</span><input type="date" [(ngModel)]="filters.requestedTo"
+        (change)="onFilterChange()" /></label>
     <label><span>Deploy Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
         <option value="all">All</option>
         <option value="success">Success</option>
         <option value="pending">Pending</option>
         <option value="failed">Failed</option>
       </select></label>
-    <label><span>User</span><input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)" placeholder="User / Email" /></label>
+    <label><span>User</span><input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)"
+        placeholder="User / Email" /></label>
   </section>
 
   <section class="table-section">
-    <div class="table-state" *ngIf="loading">Loading deploy requests...</div>
-    <div class="table-state" *ngIf="!loading && !hasRows">No deploy requests found for the selected filters.</div>
+    <ng-template #deployCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+        <span *ngSwitchCase="'Status'" class="status-badge" [class.success]="row['Status'] === 'Success'"
+          [class.failed]="row['Status'] === 'Failed'" [class.pending]="row['Status'] === 'Pending'">
+          {{ row['Status'] }}
+        </span>
+        <button *ngSwitchCase="'Action'" type="button" class="view-link" (click)="openDeployRequestDetails(row)">
+          View
+        </button>
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
 
-    <app-ui-table
-      [columns]="columns"
-      [rows]="rows"
-      [minWidth]="'920px'"
-      [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
+    <app-ui-table [columns]="columns" [rows]="rows"
+      [emptyMessage]="!loading ? 'No deploy requests found for the selected filters.' : 'Loading deploy requests...'"
+      [cellTemplate]="deployCellTemplate" [minWidth]="'920px'" [maxHeight]="'calc(100vh - 340px)'"></app-ui-table>
 
     <div class="table-footer">
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} deploy requests</p>
@@ -47,4 +53,18 @@
       </div>
     </div>
   </section>
+
+  <app-ui-modal [open]="!!selectedDeployRequest" title="Deploy Request Details" (closed)="closeDeployRequestDetails()">
+    <div class="detail-grid" *ngIf="selectedDeployRequest as request">
+      <div class="detail-item"><span>User</span><strong>{{ request.user || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Project ID</span><strong>{{ request.project_id || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Project Name</span><strong>{{ request.project_name || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Template ID</span><strong>{{ request.public_template_id || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Domain</span><strong>{{ request.domain || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Environment</span><strong>{{ request.environment || 'N/A' }}</strong></div>
+      <div class="detail-item"><span>Requested At</span><strong>{{ request.requested_at | date:'dd MMM yyyy, hh:mm a'
+          }}</strong></div>
+      <div class="detail-item"><span>Status</span><strong>{{ request.status || 'N/A' }}</strong></div>
+    </div>
+  </app-ui-modal>
 </section>

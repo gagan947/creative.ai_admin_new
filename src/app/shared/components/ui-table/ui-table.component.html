@@ -7,7 +7,16 @@
     </thead>
     <tbody>
       <tr *ngFor="let row of rows">
-        <td *ngFor="let col of columns">{{ row[col] }}</td>
+        <td *ngFor="let col of columns">
+          <ng-container
+            *ngIf="cellTemplate; else defaultCell"
+            [ngTemplateOutlet]="cellTemplate"
+            [ngTemplateOutletContext]="{ $implicit: row, column: col }"></ng-container>
+          <ng-template #defaultCell>{{ row[col] }}</ng-template>
+        </td>
+      </tr>
+      <tr *ngIf="!rows.length && emptyMessage" class="empty-row">
+        <td [attr.colspan]="columns.length">{{ emptyMessage }}</td>
       </tr>
     </tbody>
   </table>
