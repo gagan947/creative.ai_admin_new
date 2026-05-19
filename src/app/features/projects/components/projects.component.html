@@ -35,6 +35,9 @@
           [class.failed]="row['StatusTone'] === 'failed'" [class.pending]="row['StatusTone'] === 'pending'">
           {{ row['Status'] }}
         </span>
+        <button *ngSwitchCase="'Action'" type="button" class="view-link" (click)="openProjectDetails(row)">
+          View
+        </button>
         <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
       </ng-container>
     </ng-template>

@@ -1,6 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../core/services/notification.service';
@@ -26,13 +27,13 @@ interface ProjectFilters {
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, FormsModule, UiButtonComponent, UiTableComponent],
+  imports: [CommonModule, FormsModule, RouterModule, UiButtonComponent, UiTableComponent],
   providers: [DatePipe],
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss'],
 })
 export class ProjectsComponent implements OnInit {
-  readonly columns = ['S.No.', 'Project Name', 'User', 'Status', 'Deployment', 'Created Date'];
+  readonly columns = ['S.No.', 'Project Name', 'User', 'Status', 'Deployment', 'Created Date', 'Action'];
   readonly pageSize = 10;
   readonly textFilterChanges$ = new Subject<void>();
 
@@ -55,6 +56,7 @@ export class ProjectsComponent implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +138,16 @@ export class ProjectsComponent implements OnInit {
     link.download = `projects-page-${this.currentPage}.csv`;
     link.click();
     URL.revokeObjectURL(url);
+  }
+
+  openProjectDetails(row: ProjectRow): void {
+    const inquiryId = row['InquiryId'];
+    if (!inquiryId) {
+      this.notificationService.warning('Project details are not available for this record.');
+      return;
+    }
+
+    void this.router.navigate(['/projects', inquiryId]);
   }
 
   private loadProjects(page = this.currentPage): void {
@@ -272,12 +284,14 @@ export class ProjectsComponent implements OnInit {
 
     return {
       'S.No.': (this.currentPage - 1) * this.pageSize + index + 1,
+      InquiryId: project.id || '',
       'Project Name': project.clientProjectName || 'N/A',
       User: project.name || 'N/A',
       Status: status,
       StatusTone: this.getProjectStatusTone(status),
       Deployment: this.formatDeployment(project.project_deployed),
       'Created Date': this.formatDateTime(project.createdAt),
+      Action: 'View',
     };
   }
 

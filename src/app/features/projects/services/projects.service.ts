@@ -16,6 +16,43 @@ export interface ProjectRecord {
   name?: string | null;
 }
 
+export interface ProjectTemplateErrorReport {
+  id?: number;
+  attempt?: number | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  error_messages?: string | null;
+}
+
+export interface ProjectTemplateRecord {
+  build_by?: string | null;
+  created_at?: string | null;
+  build_status?: number | string | null;
+  variation_no?: number | null;
+  error_reports?: ProjectTemplateErrorReport[] | null;
+  react_build_url?: string | null;
+  public_template_id?: string | null;
+  selected_deployment?: number | boolean | null;
+}
+
+export interface ProjectDetailRecord extends ProjectRecord {
+  userId?: number | null;
+  projectId?: number | null;
+  project_type?: string | null;
+  clientProjectLogo?: string | null;
+  projectFeatures?: string | null;
+  user_prompt?: string | null;
+  build_status?: number | string | null;
+  deployed_url?: string | null;
+  deployed_template_id?: number | null;
+  currentRoutes?: string | null;
+  payment_status?: number | boolean | null;
+  is_header_available?: number | boolean | null;
+  reminder_count?: number | null;
+  last_reminder_sent?: string | null;
+  templates?: ProjectTemplateRecord[] | null;
+}
+
 export interface ProjectsQuery {
   page: number;
   limit: number;
@@ -49,6 +86,13 @@ export interface ProjectsApiResponse {
   totalPages?: number;
 }
 
+export interface ProjectDetailApiResponse {
+  success?: boolean;
+  status?: number;
+  message?: string;
+  data?: ProjectDetailRecord | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {
   constructor(private readonly apiService: ApiService) {}
@@ -79,6 +123,13 @@ export class ProjectsService {
     }
 
     return this.apiService.get<ProjectsApiResponse>(`fetchProjectsByUser?${params.toString()}`);
+  }
+
+  fetchTemplateByInquieryId(inquieryId: string | number): Observable<ProjectDetailApiResponse> {
+    const params = new URLSearchParams();
+    params.set('inquieryId', String(inquieryId));
+
+    return this.apiService.get<ProjectDetailApiResponse>(`fetchTemplateByInquieryId?${params.toString()}`);
   }
 
   private mapStatusFilter(status: Exclude<ProjectStatusFilter, 'all'>): string {

@@ -1,0 +1,122 @@
+<section class="detail-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>{{ project?.clientProjectName || 'Project' }}</h2>
+    </div>
+    <a class="back-link" routerLink="/projects">Back to projects</a>
+  </div>
+
+  <div class="page-state" *ngIf="loading">Loading project details...</div>
+  <div class="page-state" *ngIf="!loading && !project">No project details found.</div>
+
+  <ng-container *ngIf="!loading && project as detail">
+    <section class="cards">
+      <article class="card">
+        <p>User</p>
+        <h3>{{ detail.name || 'N/A' }}</h3>
+      </article>
+      <article class="card">
+        <p>Project Status</p>
+        <h3><span class="status-badge" [class.success]="projectStatusTone === 'success'"
+            [class.failed]="projectStatusTone === 'failed'" [class.pending]="projectStatusTone === 'pending'">{{
+            projectStatus }}</span></h3>
+      </article>
+      <article class="card">
+        <p>Build Status</p>
+        <h3><span class="status-badge" [class.success]="buildStatusTone === 'success'"
+            [class.failed]="buildStatusTone === 'failed'" [class.pending]="buildStatusTone === 'pending'">{{ buildStatus
+            }}</span></h3>
+      </article>
+      <article class="card">
+        <p>Deployment</p>
+        <h3>{{ deploymentStatus }}</h3>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <h3>Project Overview</h3>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Project Name</span><strong>{{ detail.clientProjectName || 'N/A' }}</strong>
+          </div>
+          <div class="detail-item"><span>Created At</span><strong>{{ formatDateTime(detail.createdAt) }}</strong></div>
+          <div class="detail-item"><span>Updated At</span><strong>{{ formatDateTime(detail.updatedAt) }}</strong></div>
+          <div class="detail-item"><span>Deployed URL</span><strong>{{ detail.deployed_url || 'N/A' }}</strong></div>
+          <div class="detail-item"><span>Reminder Count</span><strong>{{ detail.reminder_count ?? 'N/A' }}</strong>
+          </div>
+          <div class="detail-item"><span>Last Reminder Sent</span><strong>{{ formatDateTime(detail.last_reminder_sent)
+              }}</strong></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h3>User Prompt</h3>
+        <p class="prompt-copy">{{ detail.user_prompt || 'N/A' }}</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Templates</h3>
+        <p>{{ templates.length }} record(s)</p>
+      </div>
+
+      <div class="empty-state" *ngIf="!templates.length">No templates found for this project.</div>
+
+      <div class="template-list" *ngIf="templates.length">
+        <article class="template-card" *ngFor="let template of templates; trackBy: trackByTemplate">
+          <div class="template-head">
+            <div class="template-title">
+              <h4>#{{ template.variation_no || 'N/A' }}</h4>
+              <p>{{ formatDateTime(template.created_at) }}</p>
+            </div>
+            <span class="status-badge" [class.success]="getTemplateBuildStatusTone(template.build_status) === 'success'"
+              [class.failed]="getTemplateBuildStatusTone(template.build_status) === 'failed'"
+              [class.pending]="getTemplateBuildStatusTone(template.build_status) === 'pending'">{{
+              formatTemplateBuildStatus(template.build_status) }}</span>
+          </div>
+
+          <div class="template-meta">
+            <div class="template-row">
+              <span>Build By</span>
+              <strong>{{ template.build_by || 'N/A' }}</strong>
+            </div>
+            <div class="template-row">
+              <span>Public Template ID</span>
+              <strong>{{ template.public_template_id || 'N/A' }}</strong>
+            </div>
+            <div class="template-row template-row-link">
+              <span>Live URL</span>
+              <a *ngIf="template.react_build_url; else noBuildUrl" [href]="template.react_build_url" target="_blank"
+                rel="noopener noreferrer">
+                {{ template.react_build_url }}
+              </a>
+              <ng-template #noBuildUrl>
+                <strong>N/A</strong>
+              </ng-template>
+            </div>
+          </div>
+
+          <div class="error-section" *ngIf="template.error_reports?.length">
+            <div class="error-header">
+              <h5>Error Report</h5>
+              <span class="report-pill">{{ template.error_reports?.length }} report</span>
+            </div>
+
+            <div class="error-card" *ngFor="let error of template.error_reports; let errorIndex = index">
+              <div class="error-meta">
+                <span>Attempt {{ error.attempt || 'N/A' }}</span>
+                <span>{{ formatDateTime(error.created_at) }}</span>
+              </div>
+              <pre>{{ getErrorMessage(template, errorIndex) }}</pre>
+              <button *ngIf="hasLongErrorMessage(template, errorIndex)" type="button" class="toggle-link"
+                (click)="toggleErrorExpansion(template, errorIndex)">
+                {{ isErrorExpanded(template, errorIndex) ? 'Read less' : 'View more' }}
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </ng-container>
+</section>
