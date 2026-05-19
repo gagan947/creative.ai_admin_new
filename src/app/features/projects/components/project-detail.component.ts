@@ -22,6 +22,7 @@ export class ProjectDetailComponent implements OnInit {
   project: ProjectDetailRecord | null = null;
   loading = false;
   expandedErrors: Record<string, boolean> = {};
+  expandedAttemptGroups: Record<string, boolean> = {};
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -84,6 +85,20 @@ export class ProjectDetailComponent implements OnInit {
 
   trackByTemplate(index: number, template: ProjectTemplateRecord): string {
     return template.public_template_id || String(index);
+  }
+
+  getVisibleErrors(template: ProjectTemplateRecord) {
+    const errors = template.error_reports || [];
+    return this.areAllAttemptsVisible(template) ? errors : errors.slice(0, 1);
+  }
+
+  areAllAttemptsVisible(template: ProjectTemplateRecord): boolean {
+    return !!this.expandedAttemptGroups[this.getTemplateKey(template)];
+  }
+
+  toggleAllAttempts(template: ProjectTemplateRecord): void {
+    const key = this.getTemplateKey(template);
+    this.expandedAttemptGroups[key] = !this.expandedAttemptGroups[key];
   }
 
   getErrorMessage(template: ProjectTemplateRecord, errorIndex: number): string {

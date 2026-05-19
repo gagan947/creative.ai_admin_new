@@ -103,7 +103,7 @@
               <span class="report-pill">{{ template.error_reports?.length }} report</span>
             </div>
 
-            <div class="error-card" *ngFor="let error of template.error_reports; let errorIndex = index">
+            <div class="error-card" *ngFor="let error of getVisibleErrors(template); let errorIndex = index">
               <div class="error-meta">
                 <span>Attempt {{ error.attempt || 'N/A' }}</span>
                 <span>{{ formatDateTime(error.created_at) }}</span>
@@ -114,6 +114,11 @@
                 {{ isErrorExpanded(template, errorIndex) ? 'Read less' : 'View more' }}
               </button>
             </div>
+
+            <button *ngIf="(template.error_reports?.length || 0) > 1" type="button" class="attempts-link"
+              (click)="toggleAllAttempts(template)">
+              {{ areAllAttemptsVisible(template) ? 'Hide extra attempts' : 'View all attempts' }}
+            </button>
           </div>
         </article>
       </div>
