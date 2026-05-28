@@ -97,6 +97,27 @@
             </div>
           </div>
 
+          <div class="customization-section" *ngIf="template.customization_reports?.length">
+            <div class="customization-header">
+              <h5>Customization Reports</h5>
+              <span class="report-pill">{{ template.customization_reports?.length }} report<span
+                  *ngIf="(template.customization_reports?.length || 0) > 1">s</span></span>
+            </div>
+
+            <div class="customization-card"
+              *ngFor="let report of template.customization_reports; let reportIndex = index">
+              <div class="customization-meta">
+                <span>Prompt {{ reportIndex + 1 }}</span>
+                <span>{{ formatDateTime(report.created_at) }}</span>
+              </div>
+              <p>{{ report.prompt || 'N/A' }}</p>
+              <div class="customization-credit">
+                <span>Credits Deducted</span>
+                <strong>{{ report.credits_deducted ?? 'N/A' }}</strong>
+              </div>
+            </div>
+          </div>
+
           <div class="error-section" *ngIf="template.error_reports?.length">
             <div class="error-header">
               <h5>Error Report</h5>

@@ -245,6 +245,72 @@
   background: #fffaf0;
 }
 
+.customization-section {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.customization-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  background: #e6eaee;
+  padding-inline: 10px;
+  padding-block: 5px;
+  border-radius: 10px;
+}
+
+.customization-card {
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.customization-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+  color: #1d4ed8;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.customization-card p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.customization-credit {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.customization-credit span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.customization-credit strong {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
 .error-header {
   display: flex;
   justify-content: space-between;

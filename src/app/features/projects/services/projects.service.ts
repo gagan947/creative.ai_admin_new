@@ -24,12 +24,25 @@ export interface ProjectTemplateErrorReport {
   error_messages?: string | null;
 }
 
+export interface ProjectTemplateCustomizationReport {
+  id?: number;
+  prompt?: string | null;
+  user_id?: number | null;
+  created_at?: string | null;
+  inquiry_id?: number | null;
+  updated_at?: string | null;
+  credits_deducted?: number | null;
+  public_template_id?: string | null;
+}
+
 export interface ProjectTemplateRecord {
   build_by?: string | null;
   created_at?: string | null;
   build_status?: number | string | null;
   variation_no?: number | null;
   error_reports?: ProjectTemplateErrorReport[] | null;
+  customization_reports?: ProjectTemplateCustomizationReport[] | null;
+  customization_credits_total?: number | null;
   react_build_url?: string | null;
   public_template_id?: string | null;
   selected_deployment?: number | boolean | null;
