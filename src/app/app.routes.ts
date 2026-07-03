@@ -62,6 +62,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/errors-failures/errors-failures.routes').then((m) => m.default),
       },
       {
+        path: 'blog-management',
+        loadChildren: () => import('./features/blog-management/blog-management.routes').then((m) => m.default),
+      },
+      {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((m) => m.default),
       },

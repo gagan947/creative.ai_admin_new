@@ -52,6 +52,8 @@ export interface ProjectDetailRecord extends ProjectRecord {
   userId?: number | null;
   projectId?: number | null;
   project_type?: string | null;
+  ai_model?: string | null;
+  model_version?: string | null;
   clientProjectLogo?: string | null;
   projectFeatures?: string | null;
   user_prompt?: string | null;
@@ -108,7 +110,7 @@ export interface ProjectDetailApiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) { }
 
   fetchProjectsByUser(query: ProjectsQuery): Observable<ProjectsApiResponse> {
     const params = new URLSearchParams();

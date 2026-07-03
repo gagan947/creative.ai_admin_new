@@ -1,0 +1,69 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>Blog Management</h2>
+    </div>
+    <div class="actions">
+      <input [ngModel]="searchQuery" (ngModelChange)="onSearchChange($event)" placeholder="Search blogs..." />
+      <app-ui-button label="Add New" variant="primary" routerLink="/blog-management/add-blog"></app-ui-button>
+    </div>
+  </div>
+
+  <section class="table-section">
+    <ng-template #blogCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+        <span *ngSwitchCase="'Description'" class="description-text">
+          {{ row['Description'] }}
+        </span>
+
+        <span *ngSwitchCase="'Post Date'" class="nowrap-text">
+          {{ row['Post Date'] }}
+        </span>
+
+        <span *ngSwitchCase="'Action'" class="action-cell">
+          <button type="button" class="link-btn" (click)="onEditBlog(row)">Edit</button>
+          <button type="button" class="link-btn danger" (click)="onDeleteBlog(row)">Delete</button>
+        </span>
+
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
+
+    <app-ui-table
+      [columns]="columns"
+      [rows]="rows"
+      [emptyMessage]="!loading ? 'No blogs found' : 'Loading blogs...'"
+      [cellTemplate]="blogCellTemplate"
+      [minWidth]="'960px'"
+      [maxHeight]="'100%'">
+    </app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} blogs</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Delete Confirmation Modal -->
+  <app-ui-modal [open]="isDeleteModalOpen" title="Confirm Deletion" (closed)="closeDeleteModal()">
+    <div class="delete-modal-content">
+      <div class="alert-icon-container">
+        <svg viewBox="0 0 24 24" fill="none" class="alert-icon">
+          <path d="M12 9v4M12 17h.01M12 3a9 9 0 1 1-9 9 9 9 0 0 1 9-9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p>Are you sure you want to delete the blog post <strong>"{{ blogToDelete?.['Title'] }}"</strong>?</p>
+      <p class="warning-text">This action is permanent and cannot be undone.</p>
+      
+      <div class="modal-buttons">
+        <app-ui-button label="Cancel" variant="secondary" (clicked)="closeDeleteModal()"></app-ui-button>
+        <app-ui-button label="Delete" variant="primary" class="danger-btn" (clicked)="confirmDeleteBlog()"></app-ui-button>
+      </div>
+    </div>
+  </app-ui-modal>
+</section>

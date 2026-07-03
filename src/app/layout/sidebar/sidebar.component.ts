@@ -19,6 +19,7 @@ export class SidebarComponent implements OnInit {
     // { label: 'Builds', path: '/builds', icon: 'builds' },
     { label: 'Deploy', path: '/deploy', icon: 'deploy' },
     { label: 'Call Back Requests', path: '/callback-requests', icon: 'callback' },
+    { label: 'Blog Management', path: '/blog-management', icon: 'blog' },
     { label: 'Usage & Credits', path: '/usage-credits', icon: 'credits' },
     { label: 'Subscriptions & Billing', path: '/subscriptions-billing', icon: 'billing' },
     { label: 'Errors & Failures', path: '/errors-failures', icon: 'errors' },

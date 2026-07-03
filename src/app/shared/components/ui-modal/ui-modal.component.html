@@ -1,5 +1,10 @@
-﻿<div class="overlay" *ngIf="open" (click)="closed.emit()">
+<div class="overlay" *ngIf="open" (click)="closed.emit()">
   <div class="modal" (click)="$event.stopPropagation()">
+    <button type="button" class="close-modal-btn" (click)="closed.emit()" aria-label="Close modal">
+      <svg viewBox="0 0 24 24" fill="none" class="close-icon">
+        <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
     <h3>{{ title }}</h3>
     <ng-content></ng-content>
   </div>

@@ -1,0 +1,113 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>{{ blogId ? 'Edit Blog' : 'Add New Blog' }}</h2>
+    </div>
+    <div class="actions">
+      <app-ui-button label="Back to List" variant="secondary" routerLink="/blog-management"></app-ui-button>
+    </div>
+  </div>
+
+  <div class="panel form-panel">
+    <form [formGroup]="Form" (ngSubmit)="onSubmit()" class="blog-form">
+      <!-- Banner Image -->
+      <div class="form-field">
+        <span class="field-label required-label">Banner Image</span>
+
+        <div class="image-uploader-box" [class.has-preview]="logoPreview">
+          <ng-container *ngIf="logoPreview; else emptyImage">
+            <div class="preview-container">
+              <button type="button" class="remove-img-btn" (click)="removeProjectImage()" aria-label="Remove image">
+                <svg viewBox="0 0 24 24" fill="none" class="close-icon">
+                  <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+              <img [src]="logoPreview" alt="Banner Image Preview" />
+            </div>
+          </ng-container>
+
+          <ng-template #emptyImage>
+            <div class="upload-trigger" (click)="imageInput.click()">
+              <svg viewBox="0 0 24 24" fill="none" class="upload-icon">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span>Upload Banner Image</span>
+            </div>
+          </ng-template>
+        </div>
+
+        <input #imageInput type="file" class="hidden-input" (change)="onFileSelected($event)" accept="image/*" />
+
+        <p class="field-error" *ngIf="!logoPreview && submited">
+          Banner image is required.
+        </p>
+      </div>
+
+      <!-- Title -->
+      <div class="form-field">
+        <label>
+          <span class="field-label required-label">Title</span>
+          <input type="text" formControlName="title" placeholder="Enter blog title" />
+        </label>
+        <p class="field-error" *ngIf="Form.controls['title'].invalid && Form.controls['title'].touched">
+          Blog title is required.
+        </p>
+      </div>
+
+      <!-- Slug -->
+      <div class="form-field">
+        <label>
+          <span class="field-label required-label">Slug</span>
+          <input type="text" formControlName="slug" placeholder="enter-blog-slug" />
+        </label>
+        <p class="field-error" *ngIf="Form.controls['slug'].invalid && Form.controls['slug'].touched">
+          Blog slug is required.
+        </p>
+      </div>
+
+      <!-- Post Date -->
+      <div class="form-field">
+        <label>
+          <span class="field-label required-label">Post Date</span>
+          <input type="date" formControlName="post_date" />
+        </label>
+        <p class="field-error" *ngIf="Form.controls['post_date'].invalid && Form.controls['post_date'].touched">
+          Post date is required.
+        </p>
+      </div>
+
+      <!-- Short Description -->
+      <div class="form-field">
+        <label>
+          <span class="field-label required-label">Short Description</span>
+          <textarea rows="8" formControlName="description"
+            placeholder="Enter a brief summary of the blog post..."></textarea>
+        </label>
+        <p class="field-error" *ngIf="Form.controls['description'].invalid && Form.controls['description'].touched">
+          Description is required.
+        </p>
+      </div>
+
+      <!-- Blog Rich Text Detail -->
+      <div class="form-field rich-editor-field">
+        <span class="field-label required-label">Blog Detail</span>
+        <div class="ngx-editor-wrapper">
+          <ngx-editor-menu [editor]="editor1" [toolbar]="toolbar1"></ngx-editor-menu>
+          <ngx-editor [editor]="editor1" formControlName="text_editor"
+            placeholder="Write your blog post details..."></ngx-editor>
+        </div>
+        <p class="field-error" *ngIf="Form.controls['text_editor'].invalid && Form.controls['text_editor'].touched">
+          Blog detail is required.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions-row">
+        <app-ui-button label="Cancel" variant="secondary" routerLink="/blog-management"
+          [disabled]="loading"></app-ui-button>
+        <app-ui-button [label]="loading ? 'Saving...' : 'Save Blog'" variant="primary" type="submit"
+          [disabled]="loading"></app-ui-button>
+      </div>
+    </form>
+  </div>
+</section>
