@@ -16,7 +16,7 @@
 
     <label>
       Email
-      <input type="email" formControlName="email" />
+      <input type="email" formControlName="email" placeholder="name@company.com" />
     </label>
     <p class="field-error" *ngIf="form.controls.email.touched && form.controls.email.hasError('required')">
       Email is required.
@@ -28,7 +28,7 @@
     <label>
       Password
       <span class="password-field">
-        <input [type]="isPasswordVisible ? 'text' : 'password'" formControlName="password" />
+        <input [type]="isPasswordVisible ? 'text' : 'password'" formControlName="password" placeholder="••••••••" />
         <button class="password-toggle" type="button"
           [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'"
           (click)="togglePasswordVisibility()">
