@@ -83,5 +83,9 @@ export class UsersService {
 
     return this.apiService.get<UsersApiResponse>(`fetchAllUsersByAdmin?${params.toString()}`);
   }
+
+  getUserDetailsById(userId: string): Observable<any> {
+    return this.apiService.get<any>(`userDetailsById?user_id=${userId}`);
+  }
 }
 

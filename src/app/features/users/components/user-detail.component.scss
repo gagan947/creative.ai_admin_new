@@ -1,4 +1,7 @@
-.detail-page { display: grid; gap: 1rem; }
+.detail-page {
+  display: grid;
+  gap: 1rem;
+}
 
 .back-link {
   color: #0ea5e9;
@@ -8,7 +11,7 @@
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 0.8rem;
 }
 
@@ -26,11 +29,31 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
-.card p { color: #0f172a; font-size: 0.9rem; font-weight: 800; }
-.card h3 { margin-top: 0.35rem; font-size: 1rem; font-weight: 800; color: #0f172a; }
-.card h3.metric { color: #2563eb; font-size: 1.5rem; }
+.card p {
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
 
-.grid { display: grid; gap: 1rem; }
+.card h3 {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  word-break: break-all;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.card h3.metric {
+  color: #2563eb;
+  font-size: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
 
 .panel {
   border: 1px solid var(--border);
@@ -62,6 +85,21 @@
   border-color: transparent;
 }
 
-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
-th, td { text-align: left; padding: 0.7rem 0.55rem; border-bottom: 1px solid #eef2f7; white-space: nowrap; }
-th { color: #0f172a; font-weight: 800; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.7rem 0.55rem;
+  border-bottom: 1px solid #eef2f7;
+  white-space: nowrap;
+}
+
+th {
+  color: #0f172a;
+  font-weight: 800;
+}
