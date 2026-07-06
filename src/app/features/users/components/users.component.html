@@ -1,18 +1,31 @@
 <section class="users-page">
   <div class="toolbar">
-    <div class="title-brand">      <h2>Users</h2>
+    <div class="title-brand">
+      <h2>Users</h2>
     </div>
     <div class="actions">
-      <input placeholder="Search users" />
-      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search users" />
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading" (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
 
   <section class="page-filters">
-    <label><span>Signup From</span><input type="date" /></label>
-    <label><span>Signup To</span><input type="date" /></label>
-    <label><span>Plan</span><select><option>All</option><option>Free Plan</option><option>Standard Plan</option><option>Enterprise Plan</option></select></label>
-    <label><span>Status</span><select><option>All</option><option>Active</option><option>Inactive</option></select></label>
+    <label><span>Signup From</span><input type="date" [(ngModel)]="filters.signupFrom" (change)="onFilterChange()" /></label>
+    <label><span>Signup To</span><input type="date" [(ngModel)]="filters.signupTo" (change)="onFilterChange()" /></label>
+    <label><span>Plan</span><select [(ngModel)]="filters.plan" (change)="onFilterChange()">
+      <option value="all">All</option>
+      <option value="free">Free Plan</option>
+      <option value="standard">Standard Plan</option>
+      <option value="pro">Pro Plan</option>
+      <option value="growth">Growth Plan</option>
+      <option value="scale">Scale Plan</option>
+      <option value="enterprise">Enterprise Plan</option>
+    </select></label>
+    <label><span>Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
+      <option value="all">All</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select></label>
   </section>
 
   <div class="table-wrap">
@@ -31,6 +44,12 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="loading && !hasRows">
+          <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading users...</td>
+        </tr>
+        <tr *ngIf="!loading && !hasRows">
+          <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No users found.</td>
+        </tr>
         <tr *ngFor="let user of users">
           <td>{{ user.name }}</td>
           <td>{{ user.phone }}</td>
@@ -39,12 +58,27 @@
           <td>{{ user.plan }}</td>
           <td>{{ user.creditsUsed }}</td>
           <td>{{ user.creditsRemaining }}</td>
-          <td>{{ user.status }}</td>
+          <td>
+            <span class="status-badge" [class.success]="user.status.toLowerCase() === 'active'" [class.failed]="user.status.toLowerCase() === 'inactive'">
+              {{ user.status }}
+            </span>
+          </td>
           <td><a class="view-link" [routerLink]="['/users', user.id]">View</a></td>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <div class="table-footer">
+    <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} users</p>
+
+    <div class="pagination">
+      <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+    </div>
+  </div>
 </section>
+
 
 

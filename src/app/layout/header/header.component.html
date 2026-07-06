@@ -11,21 +11,28 @@
     <div class="profile-menu">
       <button class="profile-btn" type="button" (click)="toggleMenu()">My Account</button>
       <div class="menu-panel" *ngIf="menuOpen">
-        <a routerLink="/profile" (click)="closeMenu()">
+        <!-- <a routerLink="/profile" (click)="closeMenu()">
           <span class="menu-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c0-3.3 2.9-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span>My Profile</span>
-        </a>
+        </a> -->
         <a routerLink="/change-password" (click)="closeMenu()">
           <span class="menu-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6v-9Z" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M12 15v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
           </span>
           <span>Change Password</span>
         </a>
         <button type="button" class="logout-btn" (click)="logout()">
           <span class="menu-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M15 8l4 4-4 4M8 12h11M5 4h7v4M5 20h7v-4M5 4v16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 8l4 4-4 4M8 12h11M5 4h7v4M5 20h7v-4M5 4v16" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </span>
           <span>Logout</span>
         </button>
