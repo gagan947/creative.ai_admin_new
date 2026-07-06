@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { NotificationService } from '../../../core/services/notification.service';
 import { UsersService } from '../services/users.service';
@@ -33,9 +33,9 @@ export class UserDetailComponent implements OnInit {
   ];
 
   projectHistory = [
-    { projectId: 'PRJ-2231', projectName: 'Brand Studio', type: 'Deploy', dateTime: '2026-05-06 10:04', status: 'Success' },
-    { projectId: 'PRJ-2230', projectName: 'Pricing Engine', type: 'Draft', dateTime: '2026-05-06 09:42', status: 'Draft Saved' },
-    { projectId: 'PRJ-2198', projectName: 'SalesOps AI', type: 'Deploy', dateTime: '2026-05-05 14:16', status: 'Failed' },
+    { id: 1, projectId: 'PRJ-2231', projectName: 'Brand Studio', type: 'Deploy', dateTime: '2026-05-06 10:04', status: 'Success' },
+    { id: 2, projectId: 'PRJ-2230', projectName: 'Pricing Engine', type: 'Draft', dateTime: '2026-05-06 09:42', status: 'Draft Saved' },
+    { id: 3, projectId: 'PRJ-2198', projectName: 'SalesOps AI', type: 'Deploy', dateTime: '2026-05-05 14:16', status: 'Failed' },
   ];
 
   constructor(
@@ -43,7 +43,8 @@ export class UserDetailComponent implements OnInit {
     private readonly usersService: UsersService,
     private readonly notificationService: NotificationService,
     private readonly cdr: ChangeDetectorRef,
-  ) {}
+    private readonly router: Router
+  ) { }
 
   setTab(tab: 'transactions' | 'projects'): void {
     this.activeTab = tab;
@@ -106,14 +107,14 @@ export class UserDetailComponent implements OnInit {
           this.phone = summary.full_phone || summary.phoneNumber || summary.phone || 'N/A';
           this.email = summary.email || 'N/A';
           this.currentPlan = summary.current_plan || summary.plan || summary.current_subscription_plan_name || 'Free Plan';
-          this.remainingCredits = typeof summary.remaining_credits !== 'undefined' ? Number(summary.remaining_credits) : 
-                                  typeof summary.creditsRemaining !== 'undefined' ? Number(summary.creditsRemaining) : 0;
-          this.totalProjects = typeof summary.total_projects !== 'undefined' ? Number(summary.total_projects) : 
-                               typeof summary.totalProjects !== 'undefined' ? Number(summary.totalProjects) : 0;
-          this.totalDrafts = typeof summary.drafts !== 'undefined' ? Number(summary.drafts) : 
-                             typeof summary.total_drafts !== 'undefined' ? Number(summary.total_drafts) : 0;
-          this.totalDeploys = typeof summary.deploys !== 'undefined' ? Number(summary.deploys) : 
-                              typeof summary.total_deploys !== 'undefined' ? Number(summary.total_deploys) : 0;
+          this.remainingCredits = typeof summary.remaining_credits !== 'undefined' ? Number(summary.remaining_credits) :
+            typeof summary.creditsRemaining !== 'undefined' ? Number(summary.creditsRemaining) : 0;
+          this.totalProjects = typeof summary.total_projects !== 'undefined' ? Number(summary.total_projects) :
+            typeof summary.totalProjects !== 'undefined' ? Number(summary.totalProjects) : 0;
+          this.totalDrafts = typeof summary.drafts !== 'undefined' ? Number(summary.drafts) :
+            typeof summary.total_drafts !== 'undefined' ? Number(summary.total_drafts) : 0;
+          this.totalDeploys = typeof summary.deploys !== 'undefined' ? Number(summary.deploys) :
+            typeof summary.total_deploys !== 'undefined' ? Number(summary.total_deploys) : 0;
 
           const txHistory = data.transaction_history || data.transactions;
           if (Array.isArray(txHistory) && txHistory.length > 0) {
@@ -130,6 +131,7 @@ export class UserDetailComponent implements OnInit {
           const projHistory = data.project_history || data.projects;
           if (Array.isArray(projHistory) && projHistory.length > 0) {
             this.projectHistory = projHistory.map((p: any) => ({
+              id: p.id,
               projectId: p.project_id || p.projectId || p.id || 'N/A',
               projectName: p.project || p.projectName || p.name || 'N/A',
               type: p.type || 'N/A',
@@ -168,5 +170,14 @@ export class UserDetailComponent implements OnInit {
     } catch {
       return rawDate;
     }
+  }
+
+  openProjectDetails(id: any): void {
+    if (!id) {
+      this.notificationService.warning('Project details are not available for this record.');
+      return;
+    }
+
+    void this.router.navigate(['/projects', id]);
   }
 }
