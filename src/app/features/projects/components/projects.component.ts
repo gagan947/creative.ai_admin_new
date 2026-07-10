@@ -190,8 +190,8 @@ export class ProjectsComponent implements OnInit {
           const projects = this.extractProjects(response);
           const pagination = this.extractPagination(response, projects.length, page);
 
-          this.rows = projects.map((project, index) => this.mapProjectRow(project, index));
           this.currentPage = pagination.page;
+          this.rows = projects.map((project, index) => this.mapProjectRow(project, index));
           this.totalItems = pagination.total;
           this.totalPages = pagination.totalPages;
           this.stopLoading();

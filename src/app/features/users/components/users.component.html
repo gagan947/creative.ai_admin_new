@@ -5,33 +5,37 @@
     </div>
     <div class="actions">
       <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search users" />
-      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading" (clicked)="exportCsv()"></app-ui-button>
+      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading"
+        (clicked)="exportCsv()"></app-ui-button>
     </div>
   </div>
 
   <section class="page-filters">
-    <label><span>Signup From</span><input type="date" [(ngModel)]="filters.signupFrom" (change)="onFilterChange()" /></label>
-    <label><span>Signup To</span><input type="date" [(ngModel)]="filters.signupTo" (change)="onFilterChange()" /></label>
+    <label><span>Signup From</span><input type="date" [(ngModel)]="filters.signupFrom"
+        (change)="onFilterChange()" /></label>
+    <label><span>Signup To</span><input type="date" [(ngModel)]="filters.signupTo"
+        (change)="onFilterChange()" /></label>
     <label><span>Plan</span><select [(ngModel)]="filters.plan" (change)="onFilterChange()">
-      <option value="all">All</option>
-      <option value="free">Free Plan</option>
-      <option value="standard">Standard Plan</option>
-      <option value="pro">Pro Plan</option>
-      <option value="growth">Growth Plan</option>
-      <option value="scale">Scale Plan</option>
-      <option value="enterprise">Enterprise Plan</option>
-    </select></label>
+        <option value="all">All</option>
+        <option value="free">Free Plan</option>
+        <option value="standard">Standard Plan</option>
+        <option value="pro">Pro Plan</option>
+        <option value="growth">Growth Plan</option>
+        <option value="scale">Scale Plan</option>
+        <option value="enterprise">Enterprise Plan</option>
+      </select></label>
     <label><span>Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
-      <option value="all">All</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-    </select></label>
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select></label>
   </section>
 
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
+          <th>S.No.</th>
           <th>Name</th>
           <th>Phone</th>
           <th>Email</th>
@@ -50,7 +54,8 @@
         <tr *ngIf="!loading && !hasRows">
           <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No users found.</td>
         </tr>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of users; let i = index">
+          <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
           <td>{{ user.name }}</td>
           <td>{{ user.phone }}</td>
           <td>{{ user.email }}</td>
@@ -59,7 +64,8 @@
           <td>{{ user.creditsUsed }}</td>
           <td>{{ user.creditsRemaining }}</td>
           <td>
-            <span class="status-badge" [class.success]="user.status.toLowerCase() === 'active'" [class.failed]="user.status.toLowerCase() === 'inactive'">
+            <span class="status-badge" [class.success]="user.status.toLowerCase() === 'active'"
+              [class.failed]="user.status.toLowerCase() === 'inactive'">
               {{ user.status }}
             </span>
           </td>
@@ -79,6 +85,3 @@
     </div>
   </div>
 </section>
-
-
-

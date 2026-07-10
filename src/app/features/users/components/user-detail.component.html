@@ -9,23 +9,23 @@
   <section class="cards">
     <article class="card">
       <p>Phone</p>
-      <h3>{{ phone }}</h3>
+      <h3>{{ phone || 'N/A' }}</h3>
     </article>
     <article class="card">
       <p>Email</p>
-      <h3>{{ email }}</h3>
+      <h3>{{ email || 'N/A' }}</h3>
     </article>
     <article class="card">
       <p>Current Plan</p>
-      <h3>{{ currentPlan }}</h3>
+      <h3>{{ currentPlan || 'N/A' }}</h3>
     </article>
     <article class="card">
       <p>Remaining Credits</p>
-      <h3 class="metric">{{ remainingCredits }}</h3>
+      <h3 class="metric">{{ remainingCredits || 'N/A' }}</h3>
     </article>
     <article class="card">
       <p>Total Projects</p>
-      <h3 class="metric">{{ totalProjects }}</h3>
+      <h3 class="metric">{{ totalProjects || 'N/A' }}</h3>
     </article>
   </section>
 
