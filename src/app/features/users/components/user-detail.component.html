@@ -1,7 +1,7 @@
 <section class="detail-page">
   <div class="toolbar">
     <div class="title-brand">
-      <h2>User Detail - {{ userName }}</h2>
+      <h2>User Detail - {{ userName || 'N/A' }}</h2>
     </div>
     <a class="back-link" routerLink="/users">Back to users</a>
   </div>
@@ -21,11 +21,11 @@
     </article>
     <article class="card">
       <p>Remaining Credits</p>
-      <h3 class="metric">{{ remainingCredits || 'N/A' }}</h3>
+      <h3 class="metric">{{ remainingCredits ?? 'N/A' }}</h3>
     </article>
     <article class="card">
       <p>Total Projects</p>
-      <h3 class="metric">{{ totalProjects || 'N/A' }}</h3>
+      <h3 class="metric">{{ totalProjects ?? 'N/A' }}</h3>
     </article>
   </section>
 

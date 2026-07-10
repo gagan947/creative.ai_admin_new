@@ -19,24 +19,14 @@ export class UserDetailComponent implements OnInit {
   phone = '';
   email = '';
   currentPlan = '';
-  remainingCredits = 0;
-  totalProjects = 0;
-  totalDrafts = 0;
-  totalDeploys = 0;
+  remainingCredits: number | null = null;
+  totalProjects: number | null = null;
+  totalDrafts: number | null = null;
+  totalDeploys: number | null = null;
   loading = false;
 
-  transactions = [
-    { dateTime: '2026-05-06 10:11', type: 'Plan Renew', plan: 'Standard Plan', credits: 5000, paymentMode: 'UPI', detail: 'Monthly renewal' },
-    { dateTime: '2026-05-06 10:04', type: 'Build Cost', plan: 'Standard Plan', credits: -120, paymentMode: 'N/A', detail: 'Deploy: Brand Studio' },
-    { dateTime: '2026-05-05 19:36', type: 'AI Usage', plan: 'Standard Plan', credits: -40, paymentMode: 'N/A', detail: 'Landing page generation' },
-    { dateTime: '2026-05-04 08:21', type: 'Top Up', plan: 'Standard Plan', credits: 2000, paymentMode: 'Card', detail: 'Manual admin credit add' },
-  ];
-
-  projectHistory = [
-    { id: 1, projectId: 'PRJ-2231', projectName: 'Brand Studio', type: 'Deploy', dateTime: '2026-05-06 10:04', status: 'Success' },
-    { id: 2, projectId: 'PRJ-2230', projectName: 'Pricing Engine', type: 'Draft', dateTime: '2026-05-06 09:42', status: 'Draft Saved' },
-    { id: 3, projectId: 'PRJ-2198', projectName: 'SalesOps AI', type: 'Deploy', dateTime: '2026-05-05 14:16', status: 'Failed' },
-  ];
+  transactions: { dateTime: string; type: string; plan: string; credits: number; paymentMode: string; detail: string; }[] = [];
+  projectHistory: { id: any; projectId: string; projectName: string; type: string; dateTime: string; status: string; }[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -57,40 +47,10 @@ export class UserDetailComponent implements OnInit {
       return;
     }
 
-    const fallbackMap: Record<string, boolean> = {
-      'aarav-malhotra': true,
-      'ira-singh': true,
-      'rohan-das': true
-    };
-
-    if (!fallbackMap[this.userId]) {
-      this.transactions = [];
-      this.projectHistory = [];
-    }
-
     this.loadUserDetails();
   }
 
   loadUserDetails(): void {
-    const fallbackMap: Record<string, { name: string; phone: string; email: string; plan: string; credits: number; projects: number; drafts: number; deploys: number }> = {
-      'aarav-malhotra': { name: 'Aarav Malhotra', phone: '+91 98765 12121', email: 'aarav@creativeai.com', plan: 'Standard Plan', credits: 18770, projects: 8, drafts: 3, deploys: 5 },
-      'ira-singh': { name: 'Ira Singh', phone: '+91 98220 44331', email: 'ira@creativeai.com', plan: 'Free Plan', credits: 8100, projects: 5, drafts: 2, deploys: 3 },
-      'rohan-das': { name: 'Rohan Das', phone: '+91 98901 56789', email: 'rohan@creativeai.com', plan: 'Enterprise Plan', credits: 15800, projects: 12, drafts: 4, deploys: 8 },
-    };
-
-    if (fallbackMap[this.userId]) {
-      const data = fallbackMap[this.userId];
-      this.userName = data.name;
-      this.phone = data.phone;
-      this.email = data.email;
-      this.currentPlan = data.plan;
-      this.remainingCredits = data.credits;
-      this.totalProjects = data.projects;
-      this.totalDrafts = data.drafts;
-      this.totalDeploys = data.deploys;
-      return;
-    }
-
     this.loading = true;
     this.usersService.getUserDetailsById(this.userId).subscribe({
       next: (response) => {
@@ -103,21 +63,21 @@ export class UserDetailComponent implements OnInit {
         const data = response?.data || response;
         if (data) {
           const summary = data.summary || data;
-          this.userName = summary.name || summary.displayName || summary.username || summary.email || 'N/A';
-          this.phone = summary.full_phone || summary.phoneNumber || summary.phone || 'N/A';
-          this.email = summary.email || 'N/A';
-          this.currentPlan = summary.current_plan || summary.plan || summary.current_subscription_plan_name || 'Free Plan';
-          this.remainingCredits = typeof summary.remaining_credits !== 'undefined' ? Number(summary.remaining_credits) :
-            typeof summary.creditsRemaining !== 'undefined' ? Number(summary.creditsRemaining) : 0;
-          this.totalProjects = typeof summary.total_projects !== 'undefined' ? Number(summary.total_projects) :
-            typeof summary.totalProjects !== 'undefined' ? Number(summary.totalProjects) : 0;
-          this.totalDrafts = typeof summary.drafts !== 'undefined' ? Number(summary.drafts) :
-            typeof summary.total_drafts !== 'undefined' ? Number(summary.total_drafts) : 0;
-          this.totalDeploys = typeof summary.deploys !== 'undefined' ? Number(summary.deploys) :
-            typeof summary.total_deploys !== 'undefined' ? Number(summary.total_deploys) : 0;
+          this.userName = this.cleanField(summary.name || summary.displayName || summary.username || summary.email);
+          this.phone = this.cleanField(summary.full_phone || summary.phoneNumber || summary.phone || summary.mobile);
+          this.email = this.cleanField(summary.email);
+          this.currentPlan = this.cleanField(summary.current_plan || summary.plan || summary.current_subscription_plan_name);
+          this.remainingCredits = typeof summary.remaining_credits !== 'undefined' && summary.remaining_credits !== null ? Number(summary.remaining_credits) :
+            typeof summary.creditsRemaining !== 'undefined' && summary.creditsRemaining !== null ? Number(summary.creditsRemaining) : null;
+          this.totalProjects = typeof summary.total_projects !== 'undefined' && summary.total_projects !== null ? Number(summary.total_projects) :
+            typeof summary.totalProjects !== 'undefined' && summary.totalProjects !== null ? Number(summary.totalProjects) : null;
+          this.totalDrafts = typeof summary.drafts !== 'undefined' && summary.drafts !== null ? Number(summary.drafts) :
+            typeof summary.total_drafts !== 'undefined' && summary.total_drafts !== null ? Number(summary.total_drafts) : null;
+          this.totalDeploys = typeof summary.deploys !== 'undefined' && summary.deploys !== null ? Number(summary.deploys) :
+            typeof summary.total_deploys !== 'undefined' && summary.total_deploys !== null ? Number(summary.total_deploys) : null;
 
           const txHistory = data.transaction_history || data.transactions;
-          if (Array.isArray(txHistory) && txHistory.length > 0) {
+          if (Array.isArray(txHistory)) {
             this.transactions = txHistory.map((tx: any) => ({
               dateTime: this.formatDateTime(tx.date_time || tx.dateTime || tx.createdAt || tx.created_at),
               type: tx.type || 'N/A',
@@ -126,10 +86,12 @@ export class UserDetailComponent implements OnInit {
               paymentMode: tx.payment_mode || tx.paymentMode || 'N/A',
               detail: tx.detail || tx.details || 'N/A',
             }));
+          } else {
+            this.transactions = [];
           }
 
           const projHistory = data.project_history || data.projects;
-          if (Array.isArray(projHistory) && projHistory.length > 0) {
+          if (Array.isArray(projHistory)) {
             this.projectHistory = projHistory.map((p: any) => ({
               id: p.id,
               projectId: p.project_id || p.projectId || p.id || 'N/A',
@@ -138,6 +100,8 @@ export class UserDetailComponent implements OnInit {
               dateTime: this.formatDateTime(p.date_time || p.dateTime || p.createdAt || p.created_at),
               status: p.status || 'N/A',
             }));
+          } else {
+            this.projectHistory = [];
           }
         }
         this.stopLoading();
@@ -179,5 +143,16 @@ export class UserDetailComponent implements OnInit {
     }
 
     void this.router.navigate(['/projects', id]);
+  }
+
+  private cleanField(value: any, fallback = 'N/A'): string {
+    if (value === null || value === undefined) {
+      return fallback;
+    }
+    const str = String(value).trim();
+    if (!str || str.toLowerCase() === 'null' || str.toLowerCase() === 'undefined') {
+      return fallback;
+    }
+    return str;
   }
 }

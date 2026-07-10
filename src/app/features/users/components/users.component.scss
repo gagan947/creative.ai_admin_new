@@ -64,15 +64,18 @@ table {
 th,
 td {
   text-align: left;
-  padding: 0.8rem 0.75rem;
+  padding: 0.85rem 1rem;
   border-bottom: 1px solid #eef2f7;
   white-space: nowrap;
+  font-size: 14px;
 }
 
 th {
-  color: #0f172a;
-  font-weight: 800;
+  font-weight: 700;
+  color: #334155;
   background: #f8fafc;
+  position: sticky;
+  top: 0;
 }
 
 .view-link {
