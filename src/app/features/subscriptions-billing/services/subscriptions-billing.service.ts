@@ -62,4 +62,8 @@ export class SubscriptionsBillingService {
     // Defaulting endpoint to 'subscriptions' - adjust if different
     return this.apiService.get<SubscriptionApiResponse>(`fetchSubscriptionsBillingByAdmin?${params.toString()}`);
   }
+
+  getAllPlans(): Observable<any> {
+    return this.apiService.get<any>('getAllPlans');
+  }
 }

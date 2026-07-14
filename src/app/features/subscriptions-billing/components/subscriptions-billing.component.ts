@@ -32,6 +32,7 @@ export class SubscriptionsBillingComponent implements OnInit {
   billingTo = '';
   selectedPlan = 'All';
   selectedCycle = 'All';
+  plans: { name: string; value: string }[] = [];
 
   readonly filterChanges$ = new Subject<void>();
 
@@ -47,7 +48,46 @@ export class SubscriptionsBillingComponent implements OnInit {
       this.loadSubscriptions(1);
     });
 
+    this.loadPlans();
     this.loadSubscriptions();
+  }
+
+  loadPlans(): void {
+    this.subscriptionsBillingService.getAllPlans().subscribe({
+      next: (response) => {
+        const rawPlansObj = response.data || response;
+        if (rawPlansObj && typeof rawPlansObj === 'object' && !Array.isArray(rawPlansObj)) {
+          const planList: { name: string; value: string }[] = [];
+          Object.keys(rawPlansObj).forEach((key) => {
+            const list = rawPlansObj[key];
+            if (Array.isArray(list)) {
+              list.forEach((p: any) => {
+                const name = p.plan_name || p.name || '';
+                const value = p.plan_name || p.plan_key || '';
+                if (name && !planList.some((item) => item.name === name)) {
+                  planList.push({ name, value });
+                }
+              });
+            }
+          });
+          this.plans = planList;
+          this.cdr.detectChanges();
+        } else if (Array.isArray(rawPlansObj)) {
+          this.plans = rawPlansObj.map((p: any) => {
+            if (typeof p === 'object') {
+              const name = p.plan_name || p.name || '';
+              const value = p.plan_name || '';
+              return { name, value };
+            }
+            return { name: p, value: p };
+          });
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load plans', err);
+      }
+    });
   }
 
   onFilterChange(): void {

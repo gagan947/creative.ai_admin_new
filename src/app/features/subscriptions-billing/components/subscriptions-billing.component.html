@@ -13,10 +13,8 @@
     <label>
       <span>Plan</span>
       <select [(ngModel)]="selectedPlan" (ngModelChange)="onFilterChange()">
-        <option>All</option>
-        <option>Free Plan</option>
-        <option>Standard Plan</option>
-        <option>Enterprise Plan</option>
+        <option value="All">All</option>
+        <option *ngFor="let plan of plans" [value]="plan.value">{{ plan.name }}</option>
       </select>
     </label>
     <label>
