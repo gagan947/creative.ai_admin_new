@@ -152,8 +152,8 @@ export class ModelManagementComponent implements OnInit {
           this.totalItems = response.totalRecords || models.length;
           this.totalPages = Math.max(1, Math.ceil(this.totalItems / this.pageSize));
           this.currentPage = page;
-
-          this.rows = models.map((model, index) => this.mapModelRow(model, index));
+          const shortedModels = [...models].sort((a, b) => (b.is_default || 0) - (a.is_default || 0));
+          this.rows = shortedModels.map((model, index) => this.mapModelRow(model, index));
           this.stopLoading();
         },
         error: (err) => {
@@ -287,6 +287,11 @@ export class ModelManagementComponent implements OnInit {
 
   confirmDeleteModel(): void {
     if (!this.modelToDelete || !this.modelToDelete.id) {
+      return;
+    }
+
+    if (this.modelToDelete.is_default === 1) {
+      this.notificationService.warning('Cannot delete default model.');
       return;
     }
 
