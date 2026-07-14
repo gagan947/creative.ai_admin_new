@@ -3,17 +3,44 @@
     <div class="title-brand">      <h2>Subscriptions & Billing</h2>
     </div>
     <div class="actions">
-      <input placeholder="Search Subscriptions & Billing" />
+      <input placeholder="Search Subscriptions & Billing" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" />
       <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
     </div>
   </div>
   <section class="page-filters">
-    <label><span>Billing From</span><input type="date" /></label>
-    <label><span>Billing To</span><input type="date" /></label>
-    <label><span>Plan</span><select><option>All</option><option>Free Plan</option><option>Standard Plan</option><option>Enterprise Plan</option></select></label>
-    <label><span>Cycle</span><select><option>All</option><option>Monthly</option><option>Yearly</option></select></label>
+    <label><span>Billing From</span><input type="date" [(ngModel)]="billingFrom" (ngModelChange)="onFilterChange()" /></label>
+    <label><span>Billing To</span><input type="date" [(ngModel)]="billingTo" (ngModelChange)="onFilterChange()" /></label>
+    <label>
+      <span>Plan</span>
+      <select [(ngModel)]="selectedPlan" (ngModelChange)="onFilterChange()">
+        <option>All</option>
+        <option>Free Plan</option>
+        <option>Standard Plan</option>
+        <option>Enterprise Plan</option>
+      </select>
+    </label>
+    <label>
+      <span>Cycle</span>
+      <select [(ngModel)]="selectedCycle" (ngModelChange)="onFilterChange()">
+        <option>All</option>
+        <option>Monthly</option>
+        <option>Yearly</option>
+      </select>
+    </label>
   </section>
-  <app-ui-table [columns]="columns" [rows]="rows"></app-ui-table>
+  <section class="table-section">
+    <app-ui-table [columns]="columns" [rows]="rows" [emptyMessage]="!loading ? 'No subscriptions found' : 'Loading subscriptions...'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} subscriptions</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
 </section>
 
 
