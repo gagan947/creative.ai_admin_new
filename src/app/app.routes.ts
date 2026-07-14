@@ -66,6 +66,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/blog-management/blog-management.routes').then((m) => m.default),
       },
       {
+        path: 'model-management',
+        loadChildren: () => import('./features/model-management/model-management.routes').then((m) => m.default),
+      },
+      {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((m) => m.default),
       },

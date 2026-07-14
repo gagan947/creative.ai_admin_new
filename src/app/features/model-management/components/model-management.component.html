@@ -1,0 +1,132 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>Model Management</h2>
+    </div>
+    <div class="actions">
+      <input [ngModel]="searchQuery" (ngModelChange)="onSearchChange($event)" placeholder="Search models..." />
+      <app-ui-button label="Add Model" variant="primary" (clicked)="onAddModel()"></app-ui-button>
+    </div>
+  </div>
+
+  <section class="table-section">
+    <ng-template #modelCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+
+        <span *ngSwitchCase="'Internal'" class="internal-text">
+          {{ row['Internal'] }}
+        </span>
+
+        <span *ngSwitchCase="'Default'" class="default-icon-cell">
+          <svg *ngIf="row['Default']" viewBox="0 0 24 24" fill="none" class="tick-icon" aria-label="Yes">
+            <circle cx="12" cy="12" r="10" fill="#dcfce7" />
+            <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngIf="!row['Default']" viewBox="0 0 24 24" fill="none" class="cross-icon" aria-label="No">
+            <circle cx="12" cy="12" r="10" fill="#f1f5f9" />
+            <path d="M15 9l-6 6M9 9l6 6" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+
+        <span *ngSwitchCase="'Status'">
+          <span class="status-badge" [class.success]="row['Status'] === 'Active'" [class.failed]="row['Status'] === 'Inactive'">
+            {{ row['Status'] }}
+          </span>
+        </span>
+
+        <span *ngSwitchCase="'Action'" class="action-cell">
+          <button type="button" class="link-btn" (click)="onEditModel(row)">Edit</button>
+          <button type="button" class="link-btn danger" (click)="onDeleteModel(row)">Delete</button>
+        </span>
+
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
+
+    <app-ui-table
+      [columns]="columns"
+      [rows]="rows"
+      [emptyMessage]="!loading ? 'No models found' : 'Loading models...'"
+      [cellTemplate]="modelCellTemplate"
+      [minWidth]="'720px'"
+      [maxHeight]="'100%'">
+    </app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} models</p>
+
+      <div class="pagination">
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add/Edit Model Modal -->
+  <app-ui-modal [open]="isFormModalOpen" [title]="modalTitle" (closed)="closeFormModal()">
+    <form [formGroup]="modelForm" (ngSubmit)="onSubmitForm()" class="modal-form">
+      <div class="form-grid">
+        <label>
+          <span>Model ID *</span>
+          <input type="text" formControlName="model_id" placeholder="e.g. gpt-4o" />
+          <p class="field-error" *ngIf="modelForm.get('model_id')?.touched && modelForm.get('model_id')?.hasError('required')">
+            Model ID is required.
+          </p>
+        </label>
+
+        <label>
+          <span>Name *</span>
+          <input type="text" formControlName="name" placeholder="e.g. GPT-4o" />
+          <p class="field-error" *ngIf="modelForm.get('name')?.touched && modelForm.get('name')?.hasError('required')">
+            Name is required.
+          </p>
+        </label>
+
+        <label>
+          <span>Internal</span>
+          <select formControlName="internal">
+            <option value="claude">Claude</option>
+            <option value="openai">OpenAI</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Status</span>
+          <select formControlName="status">
+            <option [value]="1">Active</option>
+            <option [value]="0">Inactive</option>
+          </select>
+        </label>
+
+        <label class="checkbox-label full-width">
+          <input type="checkbox" formControlName="is_default" />
+          <span>Set as Default Model</span>
+        </label>
+      </div>
+
+      <div class="modal-buttons">
+        <app-ui-button label="Cancel" variant="secondary" (clicked)="closeFormModal()"></app-ui-button>
+        <app-ui-button [label]="isEditing ? 'Save Changes' : 'Add Model'" variant="primary" type="submit" [disabled]="loading"></app-ui-button>
+      </div>
+    </form>
+  </app-ui-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <app-ui-modal [open]="isDeleteModalOpen" title="Confirm Deletion" (closed)="closeDeleteModal()">
+    <div class="delete-modal-content">
+      <div class="alert-icon-container">
+        <svg viewBox="0 0 24 24" fill="none" class="alert-icon">
+          <path d="M12 9v4M12 17h.01M12 3a9 9 0 1 1-9 9 9 9 0 0 1 9-9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p>Are you sure you want to delete the model <strong>"{{ modelToDelete?.name }}"</strong>?</p>
+      <p class="warning-text">This action is permanent and cannot be undone.</p>
+      
+      <div class="modal-buttons">
+        <app-ui-button label="Cancel" variant="secondary" (clicked)="closeDeleteModal()"></app-ui-button>
+        <app-ui-button label="Delete" variant="primary" class="danger-btn" (clicked)="confirmDeleteModel()"></app-ui-button>
+      </div>
+    </div>
+  </app-ui-modal>
+</section>
