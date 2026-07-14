@@ -98,9 +98,11 @@ export class ModelManagementComponent implements OnInit {
     this.modelForm = this.fb.group({
       model_id: [model ? model.model_id : '', [Validators.required, NoWhitespaceDirective.validate]],
       name: [model ? model.name : '', [Validators.required, NoWhitespaceDirective.validate]],
+      icon: [model ? model.icon : 'claude'],
       internal: [model ? model.internal : 'claude', [Validators.required]],
       is_default: [model ? model.is_default === 1 : false],
       status: [model ? model.status : 1, [Validators.required]],
+      tag: [model ? model.tag : ''],
     });
   }
 
@@ -218,7 +220,7 @@ export class ModelManagementComponent implements OnInit {
       model_id: formVal.model_id.trim(),
       name: formVal.name.trim(),
       description: '',
-      icon: '',
+      icon: formVal.icon || '',
       tag: '',
       internal: formVal.internal,
       is_default: formVal.is_default ? 1 : 0,
@@ -237,18 +239,18 @@ export class ModelManagementComponent implements OnInit {
         next: (res) => {
           this.loading = false;
           if (res.success) {
-            this.notificationService.success(res.message || 'Model updated successfully.');
             this.closeFormModal();
             this.loadModels(this.currentPage);
+            this.notificationService.success(res.message || 'Model updated successfully.');
           } else {
-            this.notificationService.warning(res.message || 'Could not update model.');
             this.cdr.detectChanges();
+            this.notificationService.warning(res.message || 'Could not update model.');
           }
         },
         error: (err) => {
           this.loading = false;
-          this.notificationService.error(err.message || 'An error occurred during update.');
           this.cdr.detectChanges();
+          this.notificationService.error(err.message || 'An error occurred during update.');
         },
       });
     } else {
@@ -256,18 +258,18 @@ export class ModelManagementComponent implements OnInit {
         next: (res) => {
           this.loading = false;
           if (res.success) {
-            this.notificationService.success(res.message || 'Model added successfully.');
             this.closeFormModal();
             this.loadModels(1); // load first page to show newly added model
+            this.notificationService.success(res.message || 'Model added successfully.');
           } else {
-            this.notificationService.warning(res.message || 'Could not add model.');
             this.cdr.detectChanges();
+            this.notificationService.warning(res.message || 'Could not add model.');
           }
         },
         error: (err) => {
           this.loading = false;
-          this.notificationService.error(err.message || 'An error occurred during create.');
           this.cdr.detectChanges();
+          this.notificationService.error(err.message || 'An error occurred during create.');
         },
       });
     }
