@@ -172,7 +172,7 @@ export class ProjectsComponent implements OnInit {
         limit: this.pageSize,
         search: this.filters.search,
         user: this.filters.user,
-        status: this.filters.status,
+        build_status: this.filters.status,
         createdFrom: this.filters.createdFrom,
         createdTo: this.filters.createdTo,
       })

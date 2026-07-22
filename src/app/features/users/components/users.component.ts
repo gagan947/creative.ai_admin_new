@@ -45,7 +45,7 @@ export class UsersComponent implements OnInit {
     private readonly usersService: UsersService,
     private readonly notificationService: NotificationService,
     private readonly cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
@@ -105,7 +105,7 @@ export class UsersComponent implements OnInit {
     const headers = ['Name', 'Phone', 'Email', 'Signup Date', 'Plan', 'Credits Used', 'Remaining', 'Status'];
     const dataRows = this.users.map((user) => [
       `"${String(user.name).replace(/"/g, '""')}"`,
-      `"${String(user.phone).replace(/"/g, '""')}"`,
+      `"${String(user.full_phone).replace(/"/g, '""')}"`,
       `"${String(user.email).replace(/"/g, '""')}"`,
       `"${String(user.signupDate).replace(/"/g, '""')}"`,
       `"${String(user.plan).replace(/"/g, '""')}"`,
@@ -268,7 +268,7 @@ export class UsersComponent implements OnInit {
   private mapUser(user: any): UserRow {
     const id = user.id || user._id || user.userId || user.user_id || '';
     const name = user.name || user.displayName || user.username || user.user || 'N/A';
-    const phone = user.phone || user.phoneNumber || user.mobile || 'N/A';
+    const full_phone = user.full_phone || user.phoneNumber || user.mobile || 'N/A';
     const email = user.email || 'N/A';
 
     let signupDate = 'N/A';
@@ -288,15 +288,15 @@ export class UsersComponent implements OnInit {
 
     const plan = user.plan || user.plan_name || user.planName || user.currentPlan || 'N/A';
     const creditsUsed = typeof user.creditsUsed !== 'undefined' ? user.creditsUsed :
-                        typeof user.credits_used !== 'undefined' ? user.credits_used :
-                        typeof user.usedCredits !== 'undefined' ? user.usedCredits :
-                        typeof user.used_credits !== 'undefined' ? user.used_credits : 0;
+      typeof user.credits_used !== 'undefined' ? user.credits_used :
+        typeof user.usedCredits !== 'undefined' ? user.usedCredits :
+          typeof user.used_credits !== 'undefined' ? user.used_credits : 0;
 
     const creditsRemaining = typeof user.creditsRemaining !== 'undefined' ? user.creditsRemaining :
-                             typeof user.credits_remaining !== 'undefined' ? user.credits_remaining :
-                             typeof user.remaining !== 'undefined' ? user.remaining :
-                             typeof user.remainingCredits !== 'undefined' ? user.remainingCredits :
-                             typeof user.remaining_credits !== 'undefined' ? user.remaining_credits : 0;
+      typeof user.credits_remaining !== 'undefined' ? user.credits_remaining :
+        typeof user.remaining !== 'undefined' ? user.remaining :
+          typeof user.remainingCredits !== 'undefined' ? user.remainingCredits :
+            typeof user.remaining_credits !== 'undefined' ? user.remaining_credits : 0;
 
     let status = 'Active';
     const rawStatus = typeof user.user_status !== 'undefined' && user.user_status !== null ? user.user_status : user.status;
@@ -312,7 +312,7 @@ export class UsersComponent implements OnInit {
     return {
       id,
       name,
-      phone,
+      full_phone,
       email,
       signupDate,
       plan,

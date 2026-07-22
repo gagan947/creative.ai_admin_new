@@ -57,7 +57,7 @@
         <tr *ngFor="let user of users; let i = index">
           <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
           <td>{{ user.name }}</td>
-          <td>{{ user.phone }}</td>
+          <td>{{ user.full_phone}}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.signupDate }}</td>
           <td>{{ user.plan }}</td>

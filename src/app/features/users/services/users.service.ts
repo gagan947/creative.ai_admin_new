@@ -6,7 +6,7 @@ import { ApiService } from '../../../core/services/api.service';
 export interface UserRow {
   id: string;
   name: string;
-  phone: string;
+  full_phone: string;
   email: string;
   signupDate: string;
   plan: string;
@@ -50,7 +50,7 @@ export interface UsersApiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) { }
 
   getUsers(): Observable<User[]> {
     return this.apiService.get<User[]>('users');

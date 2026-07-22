@@ -75,7 +75,7 @@ export interface ProjectsQuery {
   limit: number;
   search?: string;
   user?: string;
-  status?: ProjectStatusFilter;
+  build_status?: string | null;
   createdFrom?: string;
   createdTo?: string;
 }
@@ -127,8 +127,8 @@ export class ProjectsService {
       params.set('user', query.user.trim());
     }
 
-    if (query.status && query.status !== 'all') {
-      params.set('status', this.mapStatusFilter(query.status));
+    if (query.build_status && query.build_status !== 'all') {
+      params.set('build_status', query.build_status);
     }
 
     if (query.createdFrom) {
