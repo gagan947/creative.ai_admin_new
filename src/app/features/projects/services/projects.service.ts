@@ -7,6 +7,7 @@ export type ProjectStatusFilter = 'all' | 'active' | 'draft' | 'archived';
 
 export interface ProjectRecord {
   id?: number;
+  build_status?: number | string | null;
   public_id?: string | null;
   clientProjectName?: string | null;
   projectStatus?: number | string | null;
@@ -14,6 +15,7 @@ export interface ProjectRecord {
   createdAt?: string | null;
   updatedAt?: string | null;
   name?: string | null;
+  ai_model?: string | null;
 }
 
 export interface ProjectTemplateErrorReport {

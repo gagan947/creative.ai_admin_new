@@ -33,7 +33,7 @@ interface ProjectFilters {
   styleUrls: ['./projects.component.scss'],
 })
 export class ProjectsComponent implements OnInit {
-  readonly columns = ['S.No.', 'Project Name', 'User', 'Status', 'Deployment', 'Created Date', 'Action'];
+  readonly columns = ['S.No.', 'Project Name', 'User', 'Status', 'Model Used', 'Created Date', 'Action'];
   readonly pageSize = 10;
   readonly textFilterChanges$ = new Subject<void>();
 
@@ -57,7 +57,7 @@ export class ProjectsComponent implements OnInit {
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
@@ -280,7 +280,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   private mapProjectRow(project: ProjectRecord, index: number): ProjectRow {
-    const status = this.formatProjectStatus(project.projectStatus);
+    const status = this.formatProjectStatus(project.build_status);
 
     return {
       'S.No.': (this.currentPage - 1) * this.pageSize + index + 1,
@@ -289,7 +289,7 @@ export class ProjectsComponent implements OnInit {
       User: project.name || 'N/A',
       Status: status,
       StatusTone: this.getProjectStatusTone(status),
-      Deployment: this.formatDeployment(project.project_deployed),
+      'Model Used': project.ai_model || 'N/A',
       'Created Date': this.formatDateTime(project.createdAt),
       Action: 'View',
     };
@@ -307,11 +307,11 @@ export class ProjectsComponent implements OnInit {
 
     switch (status) {
       case 0:
-        return 'Archived';
+        return 'Failed';
       case 1:
-        return 'Active';
+        return 'Success';
       case 2:
-        return 'Draft';
+        return 'Pending';
       default:
         return String(status);
     }
@@ -355,11 +355,11 @@ export class ProjectsComponent implements OnInit {
 
   private getProjectStatusTone(status: string): string {
     switch (status.toLowerCase()) {
-      case 'active':
+      case 'success':
         return 'success';
-      case 'draft':
+      case 'pending':
         return 'pending';
-      case 'archived':
+      case 'failed':
         return 'failed';
       default:
         return '';

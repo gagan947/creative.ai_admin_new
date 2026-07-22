@@ -19,9 +19,9 @@
       <span>Status</span>
       <select [(ngModel)]="filters.status" (change)="onFilterChange()">
         <option value="all">All</option>
-        <option value="active">Active</option>
-        <option value="draft">Draft</option>
-        <option value="archived">Archived</option>
+        <option value="success">Success</option>
+        <option value="failed">Failed</option>
+        <option value="pending">Pending</option>
       </select>
     </label>
     <label><span>User</span><input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)"
