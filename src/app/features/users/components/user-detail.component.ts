@@ -26,7 +26,7 @@ export class UserDetailComponent implements OnInit {
   loading = false;
 
   transactions: { dateTime: string; type: string; plan: string; credits: number; paymentMode: string; detail: string; }[] = [];
-  projectHistory: { id: any; projectId: string; projectName: string; type: string; dateTime: string; status: string; }[] = [];
+  projectHistory: { id: any; projectId: string; projectName: string; type: string; dateTime: string; build_status: string; }[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -98,7 +98,7 @@ export class UserDetailComponent implements OnInit {
               projectName: p.project || p.projectName || p.name || 'N/A',
               type: p.type || 'N/A',
               dateTime: this.formatDateTime(p.date_time || p.dateTime || p.createdAt || p.created_at),
-              status: p.status || 'N/A',
+              build_status: p.build_status == 1 ? 'Success' : 'Failed',
             }));
           } else {
             this.projectHistory = [];
@@ -154,5 +154,18 @@ export class UserDetailComponent implements OnInit {
       return fallback;
     }
     return str;
+  }
+
+  getProjectStatusTone(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'success':
+        return 'success';
+      case 'pending':
+        return 'pending';
+      case 'failed':
+        return 'failed';
+      default:
+        return '';
+    }
   }
 }

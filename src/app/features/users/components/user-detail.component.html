@@ -100,7 +100,11 @@
             <td>{{ p.projectName }}</td>
             <!-- <td>{{ p.type }}</td> -->
             <td>{{ p.dateTime }}</td>
-            <td>{{ p.status }}</td>
+            <td><span class="status-badge" [class.success]="getProjectStatusTone(p.build_status) === 'success'"
+                [class.error]="getProjectStatusTone(p.build_status) === 'failed'"
+                [class.warning]="getProjectStatusTone(p.build_status) === 'pending'">
+                {{ p.build_status }}
+              </span></td>
             <td><button type="button" class="view-link" (click)="openProjectDetails(p.id)">
                 View
               </button></td>
