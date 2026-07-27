@@ -125,13 +125,13 @@
                 <strong>{{ report.credits_deducted ?? 'N/A' }}</strong>
               </div>
 
-              <div class="error-section" *ngIf="report.error_reports?.length" style="margin-top: 1.5rem;">
-                <div class="error-header">
-                  <h5>Error Report</h5>
-                  <span class="report-pill">{{ report.error_reports?.length }} report<span *ngIf="(report.error_reports?.length || 0) > 1">s</span></span>
+              <div class="nested-errors" *ngIf="report.error_reports?.length">
+                <div class="nested-errors-header">
+                  <span>Error Report ({{ report.error_reports?.length }})</span>
                 </div>
 
-                <div class="error-card" *ngFor="let error of getVisibleErrors(report, reportIndex); let errorIndex = index">
+                <div class="nested-error-item"
+                  *ngFor="let error of getVisibleErrors(report, reportIndex); let errorIndex = index">
                   <div class="error-meta">
                     <span>Attempt {{ error.attempt || 'N/A' }}</span>
                     <span>{{ formatDateTime(error.created_at) }}</span>

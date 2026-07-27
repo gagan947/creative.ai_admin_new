@@ -381,6 +381,29 @@ pre {
   padding: 0;
 }
 
+.nested-errors {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #cbd5e1;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.nested-errors-header {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #9f1239;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.nested-error-item {
+  background: #fff5f5;
+  border-radius: 8px;
+  padding: 0.85rem;
+  border-left: 3px solid #f43f5e;
+}
+
 @media (min-width: 900px) {
   .template-list {
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
