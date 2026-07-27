@@ -124,30 +124,54 @@
                 <span>Credits Deducted</span>
                 <strong>{{ report.credits_deducted ?? 'N/A' }}</strong>
               </div>
+
+              <div class="error-section" *ngIf="report.error_reports?.length" style="margin-top: 1.5rem;">
+                <div class="error-header">
+                  <h5>Error Report</h5>
+                  <span class="report-pill">{{ report.error_reports?.length }} report<span *ngIf="(report.error_reports?.length || 0) > 1">s</span></span>
+                </div>
+
+                <div class="error-card" *ngFor="let error of getVisibleErrors(report, reportIndex); let errorIndex = index">
+                  <div class="error-meta">
+                    <span>Attempt {{ error.attempt || 'N/A' }}</span>
+                    <span>{{ formatDateTime(error.created_at) }}</span>
+                  </div>
+                  <pre>{{ getErrorMessage(report, reportIndex, errorIndex) }}</pre>
+                  <button *ngIf="hasLongErrorMessage(report, reportIndex, errorIndex)" type="button" class="toggle-link"
+                    (click)="toggleErrorExpansion(report, reportIndex, errorIndex)">
+                    {{ isErrorExpanded(report, reportIndex, errorIndex) ? 'Read less' : 'View more' }}
+                  </button>
+                </div>
+
+                <button *ngIf="(report.error_reports?.length || 0) > 1" type="button" class="attempts-link"
+                  (click)="toggleAllAttempts(report, reportIndex)">
+                  {{ areAllAttemptsVisible(report, reportIndex) ? 'Hide extra attempts' : 'View all attempts' }}
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="error-section" *ngIf="template.error_reports?.length">
+          <div class="error-section" *ngIf="template.error_reports?.length && !template.customization_reports?.length">
             <div class="error-header">
-              <h5>Error Report</h5>
+              <h5>Initial Generation Error Report</h5>
               <span class="report-pill">{{ template.error_reports?.length }} report</span>
             </div>
 
-            <div class="error-card" *ngFor="let error of getVisibleErrors(template); let errorIndex = index">
+            <div class="error-card" *ngFor="let error of getVisibleTemplateErrors(template); let errorIndex = index">
               <div class="error-meta">
                 <span>Attempt {{ error.attempt || 'N/A' }}</span>
                 <span>{{ formatDateTime(error.created_at) }}</span>
               </div>
-              <pre>{{ getErrorMessage(template, errorIndex) }}</pre>
-              <button *ngIf="hasLongErrorMessage(template, errorIndex)" type="button" class="toggle-link"
-                (click)="toggleErrorExpansion(template, errorIndex)">
-                {{ isErrorExpanded(template, errorIndex) ? 'Read less' : 'View more' }}
+              <pre>{{ getTemplateErrorMessage(template, errorIndex) }}</pre>
+              <button *ngIf="hasLongTemplateErrorMessage(template, errorIndex)" type="button" class="toggle-link"
+                (click)="toggleTemplateErrorExpansion(template, errorIndex)">
+                {{ isTemplateErrorExpanded(template, errorIndex) ? 'Read less' : 'View more' }}
               </button>
             </div>
 
             <button *ngIf="(template.error_reports?.length || 0) > 1" type="button" class="attempts-link"
-              (click)="toggleAllAttempts(template)">
-              {{ areAllAttemptsVisible(template) ? 'Hide extra attempts' : 'View all attempts' }}
+              (click)="toggleAllTemplateAttempts(template)">
+              {{ areAllTemplateAttemptsVisible(template) ? 'Hide extra attempts' : 'View all attempts' }}
             </button>
           </div>
         </article>

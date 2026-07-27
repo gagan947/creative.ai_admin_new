@@ -6,6 +6,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import {
   ProjectDetailRecord,
   ProjectTemplateRecord,
+  ProjectTemplateCustomizationReport,
   ProjectsService,
 } from '../services/projects.service';
 
@@ -87,40 +88,78 @@ export class ProjectDetailComponent implements OnInit {
     return template.public_template_id || String(index);
   }
 
-  getVisibleErrors(template: ProjectTemplateRecord) {
-    const errors = template.error_reports || [];
-    return this.areAllAttemptsVisible(template) ? errors : errors.slice(0, 1);
+  getVisibleErrors(report: ProjectTemplateCustomizationReport, reportIndex: number) {
+    const errors = report.error_reports || [];
+    return this.areAllAttemptsVisible(report, reportIndex) ? errors : errors.slice(0, 1);
   }
 
-  areAllAttemptsVisible(template: ProjectTemplateRecord): boolean {
+  areAllAttemptsVisible(report: ProjectTemplateCustomizationReport, reportIndex: number): boolean {
+    return !!this.expandedAttemptGroups[this.getReportKey(report, reportIndex)];
+  }
+
+  toggleAllAttempts(report: ProjectTemplateCustomizationReport, reportIndex: number): void {
+    const key = this.getReportKey(report, reportIndex);
+    this.expandedAttemptGroups[key] = !this.expandedAttemptGroups[key];
+  }
+
+  getErrorMessage(report: ProjectTemplateCustomizationReport, reportIndex: number, errorIndex: number): string {
+    const errorMessage = report.error_reports?.[errorIndex]?.error_messages || '';
+    if (!errorMessage) {
+      return 'N/A';
+    }
+
+    return this.isErrorExpanded(report, reportIndex, errorIndex) ? errorMessage : this.truncateError(errorMessage);
+  }
+
+  hasLongErrorMessage(report: ProjectTemplateCustomizationReport, reportIndex: number, errorIndex: number): boolean {
+    const errorMessage = report.error_reports?.[errorIndex]?.error_messages || '';
+    return errorMessage.length > 320;
+  }
+
+  isErrorExpanded(report: ProjectTemplateCustomizationReport, reportIndex: number, errorIndex: number): boolean {
+    return !!this.expandedErrors[this.getErrorKey(report, reportIndex, errorIndex)];
+  }
+
+  toggleErrorExpansion(report: ProjectTemplateCustomizationReport, reportIndex: number, errorIndex: number): void {
+    const key = this.getErrorKey(report, reportIndex, errorIndex);
+    this.expandedErrors[key] = !this.expandedErrors[key];
+  }
+
+  // --- Template Level Errors ---
+  getVisibleTemplateErrors(template: ProjectTemplateRecord) {
+    const errors = template.error_reports || [];
+    return this.areAllTemplateAttemptsVisible(template) ? errors : errors.slice(0, 1);
+  }
+
+  areAllTemplateAttemptsVisible(template: ProjectTemplateRecord): boolean {
     return !!this.expandedAttemptGroups[this.getTemplateKey(template)];
   }
 
-  toggleAllAttempts(template: ProjectTemplateRecord): void {
+  toggleAllTemplateAttempts(template: ProjectTemplateRecord): void {
     const key = this.getTemplateKey(template);
     this.expandedAttemptGroups[key] = !this.expandedAttemptGroups[key];
   }
 
-  getErrorMessage(template: ProjectTemplateRecord, errorIndex: number): string {
+  getTemplateErrorMessage(template: ProjectTemplateRecord, errorIndex: number): string {
     const errorMessage = template.error_reports?.[errorIndex]?.error_messages || '';
     if (!errorMessage) {
       return 'N/A';
     }
 
-    return this.isErrorExpanded(template, errorIndex) ? errorMessage : this.truncateError(errorMessage);
+    return this.isTemplateErrorExpanded(template, errorIndex) ? errorMessage : this.truncateError(errorMessage);
   }
 
-  hasLongErrorMessage(template: ProjectTemplateRecord, errorIndex: number): boolean {
+  hasLongTemplateErrorMessage(template: ProjectTemplateRecord, errorIndex: number): boolean {
     const errorMessage = template.error_reports?.[errorIndex]?.error_messages || '';
     return errorMessage.length > 320;
   }
 
-  isErrorExpanded(template: ProjectTemplateRecord, errorIndex: number): boolean {
-    return !!this.expandedErrors[this.getErrorKey(template, errorIndex)];
+  isTemplateErrorExpanded(template: ProjectTemplateRecord, errorIndex: number): boolean {
+    return !!this.expandedErrors[this.getTemplateErrorKey(template, errorIndex)];
   }
 
-  toggleErrorExpansion(template: ProjectTemplateRecord, errorIndex: number): void {
-    const key = this.getErrorKey(template, errorIndex);
+  toggleTemplateErrorExpansion(template: ProjectTemplateRecord, errorIndex: number): void {
+    const key = this.getTemplateErrorKey(template, errorIndex);
     this.expandedErrors[key] = !this.expandedErrors[key];
   }
 
@@ -239,11 +278,19 @@ export class ProjectDetailComponent implements OnInit {
     return value.length > 320 ? `${value.slice(0, 320).trimEnd()}...` : value;
   }
 
+  private getReportKey(report: ProjectTemplateCustomizationReport, reportIndex: number): string {
+    return report.id ? `report-${report.id}` : `report-index-${reportIndex}`;
+  }
+
+  private getErrorKey(report: ProjectTemplateCustomizationReport, reportIndex: number, errorIndex: number): string {
+    return `${this.getReportKey(report, reportIndex)}-error-${errorIndex}`;
+  }
+
   private getTemplateKey(template: ProjectTemplateRecord): string {
     return template.public_template_id || `variation-${template.variation_no || '0'}`;
   }
 
-  private getErrorKey(template: ProjectTemplateRecord, errorIndex: number): string {
+  private getTemplateErrorKey(template: ProjectTemplateRecord, errorIndex: number): string {
     return `${this.getTemplateKey(template)}-error-${errorIndex}`;
   }
 }
