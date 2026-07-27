@@ -35,6 +35,7 @@ export interface ProjectTemplateCustomizationReport {
   updated_at?: string | null;
   credits_deducted?: number | null;
   public_template_id?: string | null;
+  build_status?: number | string | null;
 }
 
 export interface ProjectTemplateRecord {

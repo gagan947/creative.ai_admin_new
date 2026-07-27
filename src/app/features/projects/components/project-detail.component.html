@@ -110,7 +110,14 @@
               *ngFor="let report of template.customization_reports; let reportIndex = index">
               <div class="customization-meta">
                 <span>Prompt {{ reportIndex + 1 }}</span>
-                <span>{{ formatDateTime(report.created_at) }}</span>
+                <div>
+                  <span class="status-badge" style="margin-right: 10px;"
+                    [class.success]="getTemplateBuildStatusTone(report.build_status) === 'success'"
+                    [class.failed]="getTemplateBuildStatusTone(report.build_status) === 'failed'"
+                    [class.pending]="getTemplateBuildStatusTone(report.build_status) === 'pending'">{{formatTemplateBuildStatus(report.build_status)}}
+                  </span>
+                  <span>{{ formatDateTime(report.created_at) }}</span>
+                </div>
               </div>
               <p>{{ report.prompt || 'N/A' }}</p>
               <div class="customization-credit">
