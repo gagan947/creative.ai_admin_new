@@ -36,6 +36,7 @@ export interface ProjectTemplateCustomizationReport {
   credits_deducted?: number | null;
   public_template_id?: string | null;
   build_status?: number | string | null;
+  ai_response?: string | null;
   error_reports?: ProjectTemplateErrorReport[] | null;
 }
 

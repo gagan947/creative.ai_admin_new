@@ -293,4 +293,48 @@ export class ProjectDetailComponent implements OnInit {
   private getTemplateErrorKey(template: ProjectTemplateRecord, errorIndex: number): string {
     return `${this.getTemplateKey(template)}-error-${errorIndex}`;
   }
+
+  getParsedAiResponse(response: string | null | undefined): any {
+    if (!response) {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(response);
+      return typeof parsed === 'object' && parsed !== null ? parsed : response;
+    } catch {
+      return response;
+    }
+  }
+
+  isObject(val: any): boolean {
+    return val !== null && typeof val === 'object' && !Array.isArray(val);
+  }
+
+  getAiSteps(parsedRes: any): any[] {
+    if (!parsedRes || typeof parsedRes !== 'object') return [];
+    
+    // Convert object to array of steps while preserving order or key mapping
+    const steps: any[] = [];
+    const keys = Object.keys(parsedRes);
+    
+    for (const key of keys) {
+      const val = parsedRes[key];
+      if (this.isObject(val)) {
+        steps.push({
+          key,
+          ...val
+        });
+      }
+    }
+    return steps;
+  }
+
+  formatStepName(key: string): string {
+    if (!key) return '';
+    return key
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
 }
