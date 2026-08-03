@@ -27,7 +27,18 @@
     </label>
   </section>
   <section class="table-section">
-    <app-ui-table [columns]="columns" [rows]="rows" [emptyMessage]="!loading ? 'No subscriptions found' : 'Loading subscriptions...'"></app-ui-table>
+    <app-ui-table [columns]="columns" [rows]="rows" [cellTemplate]="customCell" [emptyMessage]="!loading ? 'No subscriptions found' : 'Loading subscriptions...'"></app-ui-table>
+
+    <ng-template #customCell let-row let-column="column">
+      <ng-container *ngIf="column === 'Payment Status'; else defaultCell">
+        <span class="status-badge" [ngClass]="getBadgeClass(row['raw']['subscription_status'])">
+          {{ getDisplayStatus(row['raw']['subscription_status']) }}
+        </span>
+      </ng-container>
+      <ng-template #defaultCell>
+        {{ row[column] }}
+      </ng-template>
+    </ng-template>
 
     <div class="table-footer">
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} subscriptions</p>

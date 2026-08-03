@@ -17,7 +17,7 @@ type SubscriptionRow = Record<string, any>;
   styleUrls: ['./subscriptions-billing.component.scss'],
 })
 export class SubscriptionsBillingComponent implements OnInit {
-  columns = ['S.No.', 'User', 'Plan', 'Amount', 'Billing Cycle', 'Last Payment', 'Next Payment'];
+  columns = ['S.No.', 'User', 'Plan', 'Amount', 'Billing Cycle', 'Last Payment', 'Payment Status', 'Next Payment'];
   rows: SubscriptionRow[] = [];
 
   loading = false;
@@ -35,6 +35,20 @@ export class SubscriptionsBillingComponent implements OnInit {
   plans: { name: string; value: string }[] = [];
 
   readonly filterChanges$ = new Subject<void>();
+
+  readonly statusMap: Record<string, string> = {
+    ACTIVE: 'Active',
+    BANK_APPROVAL_PENDING: 'Bank Approval Pending',
+    CANCELLED: 'Cancelled',
+    CUSTOMER_CANCELLED: 'Cancelled',
+    PENDING: 'Pending',
+    AUTH_PENDING: 'Auth Pending',
+    INITIALIZED: 'Initialized',
+    ON_HOLD: 'On Hold',
+    EXPIRED: 'Expired',
+    COMPLETED: 'Completed',
+    INACTIVE: 'Inactive'
+  };
 
   constructor(
     private readonly subscriptionsBillingService: SubscriptionsBillingService,
@@ -179,6 +193,7 @@ export class SubscriptionsBillingComponent implements OnInit {
       Amount: record['amount'] || '₹0',
       'Billing Cycle': record['billing_cycle'] || 'N/A',
       'Last Payment': record['last_payment'] ? this.formatDate(record['last_payment']) : 'N/A',
+      'Payment Status': record['subscription_status'] || 'N/A',
       'Next Payment': record['next_payment'] ? this.formatDate(record['next_payment']) : 'N/A',
       raw: record,
     };
@@ -193,5 +208,32 @@ export class SubscriptionsBillingComponent implements OnInit {
       this.loading = false;
       this.cdr.detectChanges();
     });
+  }
+
+  getBadgeClass(status: string): string {
+    const s = status?.toUpperCase() || '';
+    switch (s) {
+      case 'ACTIVE':
+      case 'COMPLETED':
+        return 'badge-success';
+      case 'PENDING':
+      case 'AUTH_PENDING':
+      case 'BANK_APPROVAL_PENDING':
+      case 'INITIALIZED':
+      case 'ON_HOLD':
+        return 'badge-warning';
+      case 'CANCELLED':
+      case 'CUSTOMER_CANCELLED':
+      case 'EXPIRED':
+      case 'INACTIVE':
+        return 'badge-danger';
+      default:
+        return 'badge-default';
+    }
+  }
+
+  getDisplayStatus(status: string): string {
+    const s = status?.toUpperCase() || '';
+    return this.statusMap[s] || status || 'N/A';
   }
 }
