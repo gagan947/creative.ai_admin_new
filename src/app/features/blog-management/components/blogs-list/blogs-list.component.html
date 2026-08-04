@@ -42,6 +42,12 @@
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} blogs</p>
 
       <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
         <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>

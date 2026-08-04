@@ -35,7 +35,8 @@ interface CallbackRequestFilters {
 export class CallbackRequestsComponent implements OnInit {
   readonly columns = ['S.No.', 'Name', 'Email', 'Phone', 'Message', 'Requested At', 'Status', 'Action'];
   readonly exportColumns = ['S.No.', 'Name', 'Email', 'Phone', 'Message', 'Requested At', 'Status'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
   readonly statusOptions: Exclude<CallbackStatusFilter, 'all'>[] = ['open', 'closed'];
 
@@ -96,6 +97,14 @@ export class CallbackRequestsComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadCallbackRequests(1);
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadCallbackRequests(1);
+    }
   }
 
   goToPreviousPage(): void {

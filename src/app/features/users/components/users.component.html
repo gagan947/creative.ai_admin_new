@@ -3,85 +3,86 @@
     <div class="title-brand">
       <h2>Users</h2>
     </div>
-    <div class="actions">
-      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search users" />
-      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading"
-        (clicked)="exportCsv()"></app-ui-button>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search users" />
+      </div>
+
+      <div class="filter-controls">
+        <label class="filter-item">
+          <span>From</span>
+          <input type="date" [(ngModel)]="filters.signupFrom" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>To</span>
+          <input type="date" [(ngModel)]="filters.signupTo" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>Plan</span>
+          <select [(ngModel)]="filters.plan" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="free">Free Plan</option>
+            <option value="standard">Standard Plan</option>
+            <option value="pro">Pro Plan</option>
+            <option value="growth">Growth Plan</option>
+            <option value="scale">Scale Plan</option>
+            <option value="enterprise">Enterprise Plan</option>
+          </select>
+        </label>
+        <label class="filter-item">
+          <span>Status</span>
+          <select [(ngModel)]="filters.status" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading"
+          (clicked)="exportCsv()"></app-ui-button>
+      </div>
     </div>
   </div>
 
-  <section class="page-filters">
-    <label><span>Signup From</span><input type="date" [(ngModel)]="filters.signupFrom"
-        (change)="onFilterChange()" /></label>
-    <label><span>Signup To</span><input type="date" [(ngModel)]="filters.signupTo"
-        (change)="onFilterChange()" /></label>
-    <label><span>Plan</span><select [(ngModel)]="filters.plan" (change)="onFilterChange()">
-        <option value="all">All</option>
-        <option value="free">Free Plan</option>
-        <option value="standard">Standard Plan</option>
-        <option value="pro">Pro Plan</option>
-        <option value="growth">Growth Plan</option>
-        <option value="scale">Scale Plan</option>
-        <option value="enterprise">Enterprise Plan</option>
-      </select></label>
-    <label><span>Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
-        <option value="all">All</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select></label>
+  <section class="table-section">
+    <ng-template #userCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+        <span *ngSwitchCase="'Plan'">
+          <span class="plan-badge" [ngClass]="getPlanClass(row['Plan'])">
+            {{ row['Plan'] }}
+          </span>
+        </span>
+        <span *ngSwitchCase="'Status'">
+          <span class="status-badge" [ngClass]="getStatusClass(row['Status'])">
+            {{ row['Status'] }}
+          </span>
+        </span>
+        <a *ngSwitchCase="'Action'" class="view-link" [routerLink]="['/users', row['id']]">View</a>
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
+
+    <app-ui-table [columns]="columns" [rows]="rows"
+      [emptyMessage]="!loading ? 'No users found.' : 'Loading users...'"
+      [cellTemplate]="userCellTemplate" [minWidth]="'1000px'" [maxHeight]="'100%'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} users</p>
+
+      <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
   </section>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>S.No.</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Signup Date</th>
-          <th>Plan</th>
-          <th>Credits Used</th>
-          <th>Remaining</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="loading && !hasRows">
-          <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading users...</td>
-        </tr>
-        <tr *ngIf="!loading && !hasRows">
-          <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No users found.</td>
-        </tr>
-        <tr *ngFor="let user of users; let i = index">
-          <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.full_phone}}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.signupDate }}</td>
-          <td>{{ user.plan }}</td>
-          <td>{{ user.creditsUsed }}</td>
-          <td>{{ user.creditsRemaining }}</td>
-          <td>
-            <span class="status-badge" [class.success]="user.status.toLowerCase() === 'active'"
-              [class.failed]="user.status.toLowerCase() === 'inactive'">
-              {{ user.status }}
-            </span>
-          </td>
-          <td><a class="view-link" [routerLink]="['/users', user.id]">View</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="table-footer">
-    <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} users</p>
-
-    <div class="pagination">
-      <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
-    </div>
-  </div>
 </section>

@@ -23,7 +23,7 @@ export class SidebarComponent implements OnInit {
     { label: 'Model Management', path: '/model-management', icon: 'model' },
     { label: 'Usage & Credits', path: '/usage-credits', icon: 'credits' },
     { label: 'Subscriptions & Billing', path: '/subscriptions-billing', icon: 'billing' },
-    { label: 'Errors & Failures', path: '/errors-failures', icon: 'errors' },
+    // { label: 'Errors & Failures', path: '/errors-failures', icon: 'errors' },
     { label: 'Settings', path: '/settings', icon: 'settings' },
   ];
 

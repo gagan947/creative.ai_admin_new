@@ -1,31 +1,49 @@
 <section class="feature-page">
   <div class="toolbar">
-    <div class="title-brand">      <h2>Subscriptions & Billing</h2>
+    <div class="title-brand">
+      <h2>Subscriptions & Billing</h2>
     </div>
-    <div class="actions">
-      <input placeholder="Search Subscriptions & Billing" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" />
-      <app-ui-button label="Export CSV" variant="secondary"></app-ui-button>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input placeholder="Search subscriptions" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" />
+      </div>
+
+      <div class="filter-controls">
+        <label class="filter-item">
+          <span>From</span>
+          <input type="date" [(ngModel)]="billingFrom" (ngModelChange)="onFilterChange()" />
+        </label>
+
+        <label class="filter-item">
+          <span>To</span>
+          <input type="date" [(ngModel)]="billingTo" (ngModelChange)="onFilterChange()" />
+        </label>
+
+        <label class="filter-item">
+          <span>Plan</span>
+          <select [(ngModel)]="selectedPlan" (ngModelChange)="onFilterChange()">
+            <option value="All">All</option>
+            <option *ngFor="let plan of plans" [value]="plan.value">{{ plan.name }}</option>
+          </select>
+        </label>
+
+        <label class="filter-item">
+          <span>Cycle</span>
+          <select [(ngModel)]="selectedCycle" (ngModelChange)="onFilterChange()">
+            <option>All</option>
+            <option>Monthly</option>
+            <option>Yearly</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows || loading"></app-ui-button>
+      </div>
     </div>
   </div>
-  <section class="page-filters">
-    <label><span>Billing From</span><input type="date" [(ngModel)]="billingFrom" (ngModelChange)="onFilterChange()" /></label>
-    <label><span>Billing To</span><input type="date" [(ngModel)]="billingTo" (ngModelChange)="onFilterChange()" /></label>
-    <label>
-      <span>Plan</span>
-      <select [(ngModel)]="selectedPlan" (ngModelChange)="onFilterChange()">
-        <option value="All">All</option>
-        <option *ngFor="let plan of plans" [value]="plan.value">{{ plan.name }}</option>
-      </select>
-    </label>
-    <label>
-      <span>Cycle</span>
-      <select [(ngModel)]="selectedCycle" (ngModelChange)="onFilterChange()">
-        <option>All</option>
-        <option>Monthly</option>
-        <option>Yearly</option>
-      </select>
-    </label>
-  </section>
+
   <section class="table-section">
     <app-ui-table [columns]="columns" [rows]="rows" [cellTemplate]="customCell" [emptyMessage]="!loading ? 'No subscriptions found' : 'Loading subscriptions...'"></app-ui-table>
 
@@ -44,6 +62,12 @@
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} subscriptions</p>
 
       <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
         <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>

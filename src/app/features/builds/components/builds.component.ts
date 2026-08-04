@@ -33,7 +33,8 @@ interface BuildFilters {
 })
 export class BuildsComponent implements OnInit {
   readonly columns = ['Build ID', 'User', 'Project', 'Status', 'Time Taken', 'Credits Used', 'Timestamp'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: BuildRow[] = [];
@@ -97,6 +98,14 @@ export class BuildsComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadBuilds(1);
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadBuilds(1);
+    }
   }
 
   goToPreviousPage(): void {

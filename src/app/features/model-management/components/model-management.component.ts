@@ -37,7 +37,8 @@ export class ModelManagementComponent implements OnInit {
     'Created Date',
     'Action',
   ];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: ModelRow[] = [];
@@ -109,6 +110,14 @@ export class ModelManagementComponent implements OnInit {
   onSearchChange(value: string): void {
     this.searchQuery = value;
     this.textFilterChanges$.next();
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadModels(1);
+    }
   }
 
   goToPreviousPage(): void {

@@ -5,8 +5,11 @@ import { RouterModule } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../core/services/notification.service';
-import { UiButtonComponent } from '../../../shared/components';
+import { TableStateService } from '../../../core/services/table-state.service';
+import { UiButtonComponent, UiTableComponent } from '../../../shared/components';
 import { UsersService, UserRow } from '../services/users.service';
+
+type UserTableRow = Record<string, unknown>;
 
 interface UsersFilters {
   search: string;
@@ -19,15 +22,18 @@ interface UsersFilters {
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, UiButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, UiButtonComponent, UiTableComponent],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
-  readonly pageSize = 10;
+  readonly columns = ['S.No.', 'Name', 'Phone', 'Email', 'Signup Date', 'Plan', 'Credits Used', 'Remaining', 'Status', 'Action'];
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   users: UserRow[] = [];
+  rows: UserTableRow[] = [];
   loading = false;
   currentPage = 1;
   totalItems = 0;
@@ -44,15 +50,25 @@ export class UsersComponent implements OnInit {
   constructor(
     private readonly usersService: UsersService,
     private readonly notificationService: NotificationService,
+    private readonly tableStateService: TableStateService,
     private readonly cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
+    const savedState = this.tableStateService.getState<UsersFilters>('users');
+    if (savedState) {
+      this.currentPage = savedState.page || 1;
+      this.pageSize = savedState.pageSize || 10;
+      if (savedState.filters) {
+        this.filters = { ...savedState.filters };
+      }
+    }
+
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
       this.loadUsers(1);
     });
 
-    this.loadUsers();
+    this.loadUsers(this.currentPage);
   }
 
   get hasRows(): boolean {
@@ -82,6 +98,14 @@ export class UsersComponent implements OnInit {
     this.loadUsers(1);
   }
 
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadUsers(1);
+    }
+  }
+
   goToPreviousPage(): void {
     if (this.currentPage <= 1 || this.loading) {
       return;
@@ -94,6 +118,20 @@ export class UsersComponent implements OnInit {
       return;
     }
     this.loadUsers(this.currentPage + 1);
+  }
+
+  getStatusClass(status: unknown): string {
+    const s = String(status || '').toLowerCase();
+    return s === 'active' ? 'active' : s === 'inactive' ? 'inactive' : '';
+  }
+
+  getPlanClass(plan: unknown): string {
+    const p = String(plan || '').toLowerCase();
+    if (p.includes('free')) return 'free';
+    if (p.includes('standard')) return 'standard';
+    if (p.includes('pro')) return 'pro';
+    if (p.includes('enterprise')) return 'enterprise';
+    return 'free';
   }
 
   exportCsv(): void {
@@ -161,13 +199,34 @@ export class UsersComponent implements OnInit {
           const pagination = this.extractPagination(response, rawUsers.length, page);
 
           this.users = rawUsers.map((user) => this.mapUser(user));
+          this.rows = this.users.map((user, index) => ({
+            'S.No.': (pagination.page - 1) * this.pageSize + index + 1,
+            Name: user.name,
+            Phone: user.full_phone,
+            Email: user.email,
+            'Signup Date': user.signupDate,
+            Plan: user.plan,
+            'Credits Used': user.creditsUsed,
+            Remaining: user.creditsRemaining,
+            Status: user.status,
+            Action: 'View',
+            id: user.id,
+          }));
           this.currentPage = pagination.page;
           this.totalItems = pagination.total;
           this.totalPages = pagination.totalPages;
+
+          this.tableStateService.setState('users', {
+            page: this.currentPage,
+            pageSize: this.pageSize,
+            filters: { ...this.filters },
+          });
+
           this.stopLoading();
         },
         error: () => {
           this.users = [];
+          this.rows = [];
           this.totalItems = 0;
           this.totalPages = 1;
           this.stopLoading();
@@ -268,7 +327,13 @@ export class UsersComponent implements OnInit {
   private mapUser(user: any): UserRow {
     const id = user.id || user._id || user.userId || user.user_id || '';
     const name = user.name || user.displayName || user.username || user.user || 'N/A';
-    const full_phone = user.full_phone || user.phoneNumber || user.mobile || 'N/A';
+    let full_phone = user.full_phone || user.phoneNumber || user.mobile || user.phone || 'N/A';
+    if (full_phone !== 'N/A') {
+      const digits = String(full_phone).replace(/\D/g, '');
+      if (digits.length >= 10) {
+        full_phone = `+91 ${digits.slice(-10)}`;
+      }
+    }
     const email = user.email || 'N/A';
 
     let signupDate = 'N/A';

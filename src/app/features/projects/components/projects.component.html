@@ -3,29 +3,41 @@
     <div class="title-brand">
       <h2>Projects</h2>
     </div>
-    <div class="actions">
-      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search Projects" />
-      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
-        (clicked)="exportCsv()"></app-ui-button>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search" />
+      </div>
+
+      <div class="filter-controls">
+        <label class="filter-item">
+          <span>From</span>
+          <input type="date" [(ngModel)]="filters.createdFrom" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>To</span>
+          <input type="date" [(ngModel)]="filters.createdTo" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>Status</span>
+          <select [(ngModel)]="filters.status" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="1">Success</option>
+            <option value="0">Failed</option>
+          </select>
+        </label>
+        <!-- <label class="filter-item">
+          <span>User</span>
+          <input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)" placeholder="User name" />
+        </label> -->
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+          (clicked)="exportCsv()"></app-ui-button>
+      </div>
     </div>
   </div>
-
-  <section class="page-filters">
-    <label><span>Created From</span><input type="date" [(ngModel)]="filters.createdFrom"
-        (change)="onFilterChange()" /></label>
-    <label><span>Created To</span><input type="date" [(ngModel)]="filters.createdTo"
-        (change)="onFilterChange()" /></label>
-    <label>
-      <span>Status</span>
-      <select [(ngModel)]="filters.status" (change)="onFilterChange()">
-        <option value="all">All</option>
-        <option value="1">Success</option>
-        <option value="0">Failed</option>
-      </select>
-    </label>
-    <label><span>User</span><input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)"
-        placeholder="User name" /></label>
-  </section>
 
   <section class="table-section">
     <ng-template #projectCellTemplate let-row let-column="column">
@@ -49,6 +61,12 @@
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} projects</p>
 
       <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
         <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>

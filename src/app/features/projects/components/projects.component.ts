@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../core/services/notification.service';
+import { TableStateService } from '../../../core/services/table-state.service';
 import { UiButtonComponent, UiTableComponent } from '../../../shared/components';
 import {
   ProjectRecord,
@@ -34,7 +35,8 @@ interface ProjectFilters {
 })
 export class ProjectsComponent implements OnInit {
   readonly columns = ['S.No.', 'Project Name', 'User', 'Status', 'Model Used', 'Created Date', 'Action'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: ProjectRow[] = [];
@@ -54,17 +56,27 @@ export class ProjectsComponent implements OnInit {
   constructor(
     private readonly projectsService: ProjectsService,
     private readonly notificationService: NotificationService,
+    private readonly tableStateService: TableStateService,
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
   ) { }
 
   ngOnInit(): void {
+    const savedState = this.tableStateService.getState<ProjectFilters>('projects');
+    if (savedState) {
+      this.currentPage = savedState.page || 1;
+      this.pageSize = savedState.pageSize || 10;
+      if (savedState.filters) {
+        this.filters = { ...savedState.filters };
+      }
+    }
+
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
       this.loadProjects(1);
     });
 
-    this.loadProjects();
+    this.loadProjects(this.currentPage);
   }
 
   get hasRows(): boolean {
@@ -99,6 +111,14 @@ export class ProjectsComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadProjects(1);
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadProjects(1);
+    }
   }
 
   goToPreviousPage(): void {
@@ -194,6 +214,13 @@ export class ProjectsComponent implements OnInit {
           this.rows = projects.map((project, index) => this.mapProjectRow(project, index));
           this.totalItems = pagination.total;
           this.totalPages = pagination.totalPages;
+
+          this.tableStateService.setState('projects', {
+            page: this.currentPage,
+            pageSize: this.pageSize,
+            filters: { ...this.filters },
+          });
+
           this.stopLoading();
         },
         error: () => {

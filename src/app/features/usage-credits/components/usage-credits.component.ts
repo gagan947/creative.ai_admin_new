@@ -34,7 +34,8 @@ interface UsageCreditsFilters {
 export class UsageCreditsComponent implements OnInit {
   readonly columns = ['S.No.', 'User', 'Plan Name', 'Credits Given', 'Credits Used', 'Remaining'];
   readonly exportColumns = ['S.No.', 'User', 'Plan Name', 'Credits Given', 'Credits Used', 'Remaining'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: UsageCreditsRow[] = [];
@@ -92,6 +93,14 @@ export class UsageCreditsComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadUsageCredits(1);
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadUsageCredits(1);
+    }
   }
 
   goToPreviousPage(): void {

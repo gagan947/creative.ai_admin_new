@@ -5,10 +5,15 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../../core/services/notification.service';
+import { TableStateService } from '../../../../core/services/table-state.service';
 import { UiButtonComponent, UiModalComponent, UiTableComponent } from '../../../../shared/components';
 import { BlogRecord, BlogsService } from '../../services/blogs.service';
 
 type BlogRow = Record<string, string | number>;
+
+interface BlogFilters {
+  search: string;
+}
 
 @Component({
   selector: 'app-blogs-list',
@@ -20,7 +25,8 @@ type BlogRow = Record<string, string | number>;
 })
 export class BlogsListComponent implements OnInit {
   readonly columns = ['S.No.', 'Title', 'Post Date', 'Description', 'Action'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: BlogRow[] = [];
@@ -36,17 +42,27 @@ export class BlogsListComponent implements OnInit {
   constructor(
     private readonly blogsService: BlogsService,
     private readonly notificationService: NotificationService,
+    private readonly tableStateService: TableStateService,
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
   ) { }
 
   ngOnInit(): void {
+    const savedState = this.tableStateService.getState<BlogFilters>('blogs');
+    if (savedState) {
+      this.currentPage = savedState.page || 1;
+      this.pageSize = savedState.pageSize || 10;
+      if (savedState.filters?.search !== undefined) {
+        this.searchQuery = savedState.filters.search;
+      }
+    }
+
     this.textFilterChanges$.pipe(debounceTime(350)).subscribe(() => {
       this.loadBlogs(1);
     });
 
-    this.loadBlogs();
+    this.loadBlogs(this.currentPage);
   }
 
   get hasRows(): boolean {
@@ -70,6 +86,14 @@ export class BlogsListComponent implements OnInit {
   onSearchChange(value: string): void {
     this.searchQuery = value;
     this.textFilterChanges$.next();
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadBlogs(1);
+    }
   }
 
   goToPreviousPage(): void {
@@ -162,6 +186,13 @@ export class BlogsListComponent implements OnInit {
           this.currentPage = page;
 
           this.rows = blogs.map((blog, index) => this.mapBlogRow(blog, index));
+
+          this.tableStateService.setState('blogs', {
+            page: this.currentPage,
+            pageSize: this.pageSize,
+            filters: { search: this.searchQuery },
+          });
+
           this.stopLoading();
         },
         error: (err) => {

@@ -218,7 +218,7 @@ input {
 }
 
 .deep-dive-table th {
-  font-size: 0.8rem;
+
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: #52637d;
@@ -243,7 +243,7 @@ input {
 .activity-feed {
   display: grid;
   gap: 0.65rem;
-  max-height: 390px;
+  max-height: 580px;
   overflow: auto;
   padding-right: 0.2rem;
 }

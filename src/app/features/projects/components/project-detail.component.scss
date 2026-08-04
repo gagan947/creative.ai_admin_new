@@ -60,7 +60,7 @@
   min-width: 88px;
   border-radius: 999px;
   padding: 0.35rem 0.7rem;
-  font-size: 0.8rem;
+
   font-weight: 800;
   letter-spacing: 0.01em;
 }
@@ -303,11 +303,11 @@
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid #e2e8f0;
-  
+
   .ai-icon {
     color: #6366f1;
   }
-  
+
   h6 {
     margin: 0;
     font-size: 0.9rem;
@@ -350,6 +350,7 @@
     background-color: #22c55e;
     box-shadow: 0 0 0 1px #86efac;
   }
+
   &.failed {
     background-color: #ef4444;
     box-shadow: 0 0 0 1px #fca5a5;
@@ -380,10 +381,11 @@
   font-size: 0.85rem;
   font-weight: 700;
   color: #334155;
-  
+
   &.completed {
     color: #166534;
   }
+
   &.failed {
     color: #991b1b;
   }
@@ -417,10 +419,10 @@
 
 .log-item {
   font-family: monospace;
-  font-size: 0.8rem;
+
   color: #cbd5e1;
   word-break: break-all;
-  
+
   .log-chevron {
     color: #3b82f6;
     margin-right: 0.25rem;
@@ -450,7 +452,7 @@
 }
 
 .customization-credit span {
-  font-size: 0.8rem;
+
   font-weight: 800;
   color: #64748b;
   text-transform: uppercase;

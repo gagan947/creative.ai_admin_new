@@ -4,9 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import { UiButtonComponent, UiTableComponent } from '../../../shared/components';
 import { NotificationService } from '../../../core/services/notification.service';
+import { TableStateService } from '../../../core/services/table-state.service';
 import { SubscriptionsBillingService, SubscriptionRecord } from '../services/subscriptions-billing.service';
 
 type SubscriptionRow = Record<string, any>;
+
+interface SubscriptionsFilters {
+  searchQuery: string;
+  billingFrom: string;
+  billingTo: string;
+  selectedPlan: string;
+  selectedCycle: string;
+}
 
 @Component({
   selector: 'app-subscriptions-billing',
@@ -22,7 +31,8 @@ export class SubscriptionsBillingComponent implements OnInit {
 
   loading = false;
   currentPage = 1;
-  pageSize = 20;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   totalItems = 0;
   totalPages = 1;
 
@@ -53,17 +63,31 @@ export class SubscriptionsBillingComponent implements OnInit {
   constructor(
     private readonly subscriptionsBillingService: SubscriptionsBillingService,
     private readonly notificationService: NotificationService,
+    private readonly tableStateService: TableStateService,
     private readonly datePipe: DatePipe,
     private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
+    const savedState = this.tableStateService.getState<SubscriptionsFilters>('subscriptions');
+    if (savedState) {
+      this.currentPage = savedState.page || 1;
+      this.pageSize = savedState.pageSize || 10;
+      if (savedState.filters) {
+        this.searchQuery = savedState.filters.searchQuery || '';
+        this.billingFrom = savedState.filters.billingFrom || '';
+        this.billingTo = savedState.filters.billingTo || '';
+        this.selectedPlan = savedState.filters.selectedPlan || 'All';
+        this.selectedCycle = savedState.filters.selectedCycle || 'All';
+      }
+    }
+
     this.filterChanges$.pipe(debounceTime(350)).subscribe(() => {
       this.loadSubscriptions(1);
     });
 
     this.loadPlans();
-    this.loadSubscriptions();
+    this.loadSubscriptions(this.currentPage);
   }
 
   loadPlans(): void {
@@ -108,6 +132,14 @@ export class SubscriptionsBillingComponent implements OnInit {
     this.filterChanges$.next();
   }
 
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadSubscriptions(1);
+    }
+  }
+
   loadSubscriptions(page = this.currentPage): void {
     if (this.loading) {
       return;
@@ -141,6 +173,19 @@ export class SubscriptionsBillingComponent implements OnInit {
           this.currentPage = page;
 
           this.rows = records.map((record, index) => this.mapRow(record, index));
+
+          this.tableStateService.setState('subscriptions', {
+            page: this.currentPage,
+            pageSize: this.pageSize,
+            filters: {
+              searchQuery: this.searchQuery,
+              billingFrom: this.billingFrom,
+              billingTo: this.billingTo,
+              selectedPlan: this.selectedPlan,
+              selectedCycle: this.selectedCycle,
+            },
+          });
+
           this.stopLoading();
         },
         error: (err) => {

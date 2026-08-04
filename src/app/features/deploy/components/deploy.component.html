@@ -3,27 +3,43 @@
     <div class="title-brand">
       <h2>Deploy Requests</h2>
     </div>
-    <div class="actions">
-      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)"
-        placeholder="Search by user / email / project / domain / PRJ-id" />
-      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
-        (clicked)="exportCsv()"></app-ui-button>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)"
+          placeholder="Search by user / email / project / domain / PRJ-id" />
+      </div>
+
+      <div class="filter-controls">
+        <label class="filter-item">
+          <span>From</span>
+          <input type="date" [(ngModel)]="filters.requestedFrom" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>To</span>
+          <input type="date" [(ngModel)]="filters.requestedTo" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>Status</span>
+          <select [(ngModel)]="filters.status" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="success">Success</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+          </select>
+        </label>
+        <!-- <label class="filter-item">
+          <span>User</span>
+          <input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)" placeholder="User / Email" />
+        </label> -->
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+          (clicked)="exportCsv()"></app-ui-button>
+      </div>
     </div>
   </div>
-  <section class="page-filters">
-    <label><span>Requested From</span><input type="date" [(ngModel)]="filters.requestedFrom"
-        (change)="onFilterChange()" /></label>
-    <label><span>Requested To</span><input type="date" [(ngModel)]="filters.requestedTo"
-        (change)="onFilterChange()" /></label>
-    <label><span>Deploy Status</span><select [(ngModel)]="filters.status" (change)="onFilterChange()">
-        <option value="all">All</option>
-        <option value="success">Success</option>
-        <option value="pending">Pending</option>
-        <option value="failed">Failed</option>
-      </select></label>
-    <label><span>User</span><input [ngModel]="filters.user" (ngModelChange)="onUserChange($event)"
-        placeholder="User / Email" /></label>
-  </section>
 
   <section class="table-section">
     <ng-template #deployCellTemplate let-row let-column="column">
@@ -47,6 +63,12 @@
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} deploy requests</p>
 
       <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
         <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>

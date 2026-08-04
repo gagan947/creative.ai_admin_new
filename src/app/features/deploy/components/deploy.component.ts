@@ -34,7 +34,8 @@ interface DeployFilters {
 export class DeployComponent implements OnInit {
   readonly columns = ['S.No.', 'User', 'Project Name', 'Domain', 'Environment', 'Requested At', 'Status', 'Action'];
   readonly exportColumns = ['S.No.', 'User', 'Project ID', 'Project Name', 'Domain', 'Environment', 'Requested At', 'Status'];
-  readonly pageSize = 10;
+  pageSize = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
 
   rows: DeployRow[] = [];
@@ -99,6 +100,14 @@ export class DeployComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadDeployRequests(1);
+  }
+
+  onPageSizeChange(newSize: number | string): void {
+    const size = Number(newSize);
+    if (size && this.pageSize !== size) {
+      this.pageSize = size;
+      this.loadDeployRequests(1);
+    }
   }
 
   goToPreviousPage(): void {

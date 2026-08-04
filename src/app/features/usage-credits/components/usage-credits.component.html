@@ -3,30 +3,44 @@
     <div class="title-brand">
       <h2>Usage & Credits</h2>
     </div>
-    <div class="actions">
-      <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search usage credits" />
-      <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
-        (clicked)="exportCsv()"></app-ui-button>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)" placeholder="Search usage credits" />
+      </div>
+
+      <div class="filter-controls">
+        <label class="filter-item">
+          <span>From</span>
+          <input type="date" [(ngModel)]="filters.usageFrom" (change)="onFilterChange()" />
+        </label>
+        <label class="filter-item">
+          <span>To</span>
+          <input type="date" [(ngModel)]="filters.usageTo" (change)="onFilterChange()" />
+        </label>
+        <!-- <label class="filter-item">
+          <span>Plan</span>
+          <select [(ngModel)]="filters.plan" (change)="onFilterChange()">
+            <option value="all">All</option>
+          </select>
+        </label> -->
+        <label class="filter-item">
+          <span>Credit Range</span>
+          <select [(ngModel)]="filters.creditRange" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="0-1000">0-1000</option>
+            <option value="1000-5000">1000-5000</option>
+            <option value="5000+">5000+</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+          (clicked)="exportCsv()"></app-ui-button>
+      </div>
     </div>
   </div>
-
-  <section class="page-filters">
-    <label><span>Usage From</span><input type="date" [(ngModel)]="filters.usageFrom"
-        (change)="onFilterChange()" /></label>
-    <label><span>Usage To</span><input type="date" [(ngModel)]="filters.usageTo" (change)="onFilterChange()" /></label>
-    <label><span>Plan</span><select [(ngModel)]="filters.plan" (change)="onFilterChange()">
-        <option value="all">All</option>
-      </select></label>
-    <label><span>Credit Range</span><select [(ngModel)]="filters.creditRange" (change)="onFilterChange()">
-        <option value="all">All</option>
-        <option value="0-1000">0-1000</option>
-        <option value="1000-5000">1000-5000</option>
-        <option value="5000+">5000+</option>
-        <!-- <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option> -->
-      </select></label>
-  </section>
 
   <section class="table-section">
     <app-ui-table [columns]="columns" [rows]="rows"
@@ -37,6 +51,12 @@
       <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} usage credit records</p>
 
       <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
         <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
