@@ -58,6 +58,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/activity-logs/activity-logs.routes').then((m) => m.default),
       },
       {
+        path: 'user-feedback',
+        loadChildren: () => import('./features/user-feedback/user-feedback.routes').then((m) => m.default),
+      },
+      {
         path: 'errors-failures',
         loadChildren: () => import('./features/errors-failures/errors-failures.routes').then((m) => m.default),
       },

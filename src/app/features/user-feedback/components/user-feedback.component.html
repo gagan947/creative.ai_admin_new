@@ -1,0 +1,62 @@
+<section class="feature-page">
+  <div class="toolbar">
+    <div class="title-brand">
+      <h2>User Feedback</h2>
+    </div>
+
+    <div class="toolbar-controls">
+      <div class="search-box">
+        <input [ngModel]="filters.search" (ngModelChange)="onSearchChange($event)"
+          placeholder="Search by name / email" />
+      </div>
+
+      <div class="filter-controls">
+      </div>
+
+      <div class="actions">
+        <app-ui-button label="Export CSV" variant="secondary" [disabled]="!hasRows"
+          (clicked)="exportCsv()"></app-ui-button>
+      </div>
+    </div>
+  </div>
+
+  <section class="table-section">
+    <ng-template #feedbackCellTemplate let-row let-column="column">
+      <ng-container [ngSwitch]="column">
+        <span *ngSwitchCase="'Feedback'" class="message-text" [title]="getRowMessage(row)">
+          {{ getRowMessage(row) }}
+        </span>
+        <button *ngSwitchCase="'Action'" type="button" class="view-link" (click)="openMessageModal(row)">
+          View
+        </button>
+        <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
+      </ng-container>
+    </ng-template>
+
+    <app-ui-table [columns]="columns" [rows]="rows"
+      [emptyMessage]="!loading ? 'No user feedbacks found for the selected filters.' : 'Loading user feedbacks...'"
+      [cellTemplate]="feedbackCellTemplate" [minWidth]="'1180px'" [maxHeight]="'100%'"></app-ui-table>
+
+    <div class="table-footer">
+      <p>Showing {{ showingFrom }}-{{ showingTo }} of {{ totalItems }} user feedbacks</p>
+
+      <div class="pagination">
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <button type="button" [disabled]="currentPage <= 1 || loading" (click)="goToPreviousPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage >= totalPages || loading" (click)="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <app-ui-modal [open]="!!selectedMessage" title="User Feedback" (closed)="closeMessageModal()">
+    <div class="message-modal">
+      {{ selectedMessage || 'N/A' }}
+    </div>
+  </app-ui-modal>
+</section>
