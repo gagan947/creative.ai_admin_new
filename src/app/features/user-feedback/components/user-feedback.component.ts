@@ -31,8 +31,8 @@ interface UserFeedbackFilters {
   styleUrls: ['./user-feedback.component.scss'],
 })
 export class UserFeedbackComponent implements OnInit {
-  readonly columns = ['S.No.', 'Name', 'Email', 'Rating', 'Feedback', 'Submitted At', 'Action'];
-  readonly exportColumns = ['S.No.', 'Name', 'Email', 'Rating', 'Feedback', 'Submitted At'];
+  readonly columns = ['S.No.', 'Name', 'Email', 'Project Name', 'Rating', 'Feedback', 'Submitted At', 'Action'];
+  readonly exportColumns = ['S.No.', 'Name', 'Email', 'Project Name', 'Rating', 'Feedback', 'Submitted At'];
   pageSize = 10;
   readonly pageSizeOptions = [10, 25, 50, 100];
   readonly textFilterChanges$ = new Subject<void>();
@@ -289,6 +289,7 @@ export class UserFeedbackComponent implements OnInit {
       'S.No.': (page - 1) * this.pageSize + index + 1,
       Name: request.user_name || 'N/A',
       Email: request.user_email || 'N/A',
+      'Project Name': request.project_name || 'N/A',
       Rating: request.rating ? `${request.rating}/5` : 'N/A',
       Feedback: request.feedback_text || request.reason || 'N/A',
       'Submitted At': this.formatDateTime(request.created_at),

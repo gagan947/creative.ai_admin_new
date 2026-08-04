@@ -9,6 +9,8 @@ export interface UserFeedbackRecord {
   user_id?: number;
   user_name: string;
   user_email: string;
+  project_name?: string;
+  project_template_id?: string;
   feedback_type: string;
   rating: number;
   reason?: string | null;
@@ -50,7 +52,7 @@ export interface UserFeedbackApiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class UserFeedbackService {
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) { }
 
   fetchUserFeedbacks(query: UserFeedbackQuery): Observable<UserFeedbackApiResponse> {
     const params = new URLSearchParams();
