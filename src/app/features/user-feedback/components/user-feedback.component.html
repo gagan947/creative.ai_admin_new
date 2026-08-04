@@ -29,6 +29,12 @@
         <button *ngSwitchCase="'Action'" type="button" class="view-link" (click)="openMessageModal(row)">
           View
         </button>
+        <ng-container *ngSwitchCase="'Name'">
+          <a *ngIf="row['__raw']?.user_id; else noLink" [routerLink]="['/users', row['__raw'].user_id]" class="name-link">
+            {{ row[column] }}
+          </a>
+          <ng-template #noLink>{{ row[column] }}</ng-template>
+        </ng-container>
         <ng-container *ngSwitchDefault>{{ row[column] }}</ng-container>
       </ng-container>
     </ng-template>

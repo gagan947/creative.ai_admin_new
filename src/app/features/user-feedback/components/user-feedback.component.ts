@@ -1,6 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 
 import { NotificationService } from '../../../core/services/notification.service';
@@ -13,7 +14,10 @@ import {
   UserFeedbackService,
 } from '../services/user-feedback.service';
 
-type UserFeedbackRow = Record<string, unknown>;
+type UserFeedbackRow = {
+  [key: string]: any;
+  __raw?: UserFeedbackRecord;
+};
 
 interface UserFeedbackFilters {
   search: string;
@@ -25,7 +29,7 @@ interface UserFeedbackFilters {
 @Component({
   selector: 'app-user-feedback',
   standalone: true,
-  imports: [CommonModule, FormsModule, UiButtonComponent, UiModalComponent, UiTableComponent],
+  imports: [CommonModule, FormsModule, UiButtonComponent, UiModalComponent, UiTableComponent, RouterLink],
   providers: [DatePipe],
   templateUrl: './user-feedback.component.html',
   styleUrls: ['./user-feedback.component.scss'],
